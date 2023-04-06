@@ -13,6 +13,7 @@ public class Wing extends Force {
         this.strikers = strikers;
     }
 
+    @Override
     public String toString() {
         return super.toString() +
                 "\nStrikers: " + strikers;
