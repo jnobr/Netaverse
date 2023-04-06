@@ -2,7 +2,7 @@ package cwk4;
 
 import java.io.*;
 
-//hjjkjk
+//hjjkjkjdd
 
     public enum PlayerRole implements Serializable
     {
