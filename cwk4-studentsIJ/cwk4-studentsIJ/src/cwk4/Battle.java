@@ -1,6 +1,6 @@
 package cwk4;
 public class Battle
-//hehen
+//heheh
 {
     private int number;
     private BattleType type;
