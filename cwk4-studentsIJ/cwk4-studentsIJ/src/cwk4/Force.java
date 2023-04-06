@@ -1,5 +1,7 @@
 package cwk4;
 
+
+
 public class Force
 {
     private ForceState state;
@@ -15,7 +17,7 @@ public class Force
 
     public Force(String r, String n, int f, int s, int l, int p, int str, boolean c, ForceType t)
     {
-        state = new ForceState("In dock");
+        state = ForceState.DOCKED;
         reference = r;
         name = n;
         fee = f;

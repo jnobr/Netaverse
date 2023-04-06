@@ -8,7 +8,7 @@ import java.io.*;
  */
 public enum ForceType implements Serializable
 {
-    WING("Wing"), WARBIRD("Warbird"), STTARSHIP("Starship");
+    WING("Wing"), WARBIRD("Warbird"), STARSHIP("Starship");
     private String type;
 
     private ForceType(String st)
