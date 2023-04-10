@@ -1,35 +1,43 @@
 package cwk4;
 
 
-
-public class Force
-{
-    private ForceState state;
-    private String reference;
+/**
+ * Represents a force that can be inherited from, but never instantiated itself.
+ * @author Andrei Cirlig, Janine Obiri, Lewis Turnbull, Zohaib Rehman
+ */
+abstract class Force {
+    private String fleetReference;
     private String name;
-    private int fee;
-    private int strikers;
-    private int laser;
-    private int photon;
-    private int strength;
-    private boolean cloak;
-    private ForceType type;
+    private ForceState state;
+    private int activationFee;
+    private int battleStrength;
 
-    public Force(String r, String n, int f, int s, int l, int p, int str, boolean c, ForceType t)
-    {
-        state = ForceState.DOCKED;
-        reference = r;
-        name = n;
-        fee = f;
-        strikers = s;
-        laser = l;
-        photon = p;
-        strength = str;
-        cloak = c;
-        type = t;
+    private boolean canSkirmish;
+    private boolean canAmbush;
+    private boolean canFight;
 
+    public Force(String fleetReference, String name, int activationFee, int battleStrength,
+                 boolean canSkirmish, boolean canAmbush, boolean canFight) {
+        this.state = ForceState.DOCKED;
 
+        this.fleetReference = fleetReference;
+        this.name = name;
+        this.activationFee = activationFee;
+        this.battleStrength = battleStrength;
+
+        this.canSkirmish = canSkirmish;
+        this.canAmbush = canAmbush;
+        this.canFight = canFight;
     }
 
-
+    public String toString() {
+        return "Fleet reference: " + fleetReference +
+                "\nName: " + name +
+                "\nForce state: " + state +
+                "\nActivation fee: " + activationFee + " bit coins" +
+                "\nBattle strength: " + battleStrength +
+                "\nCan skirmish: " + canSkirmish +
+                "\nCan ambush: " + canAmbush +
+                "\nCan fight: " + canFight;
+    }
 }

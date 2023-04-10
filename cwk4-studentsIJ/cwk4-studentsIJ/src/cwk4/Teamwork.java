@@ -3,9 +3,9 @@ package cwk4;
 
 /**
  * Details of your team
- * 
- * @author (your name) 
- * @version (a version number or a date)
+ *
+ * @author Andrei Cirlig, Janine Obiri, Lewis Turnbull, Zohaib Rehman
+ * @version 06/04/2023
  */
 public class Teamwork
 {
@@ -17,24 +17,24 @@ public class Teamwork
         // Please list the member details alphabetically by surname 
         // i.e. the surname of member1 should come alphabetically 
         // before the surname of member 2...etc
-        details[0] = "team number";
-        
-        details[1] = "surname of member1";
-        details[2] = "first name of member1";
-        details[3] = "SRN of member1";
+        details[0] = "4";
 
-        details[4] = "surname of member2";
-        details[5] = "first name of member2";
-        details[6] = "SRN of member2";
+        details[1] = "Cirlig";
+        details[2] = "Andrei";
+        details[3] = "20049583";
 
-        details[7] = "surname of member3";
-        details[8] = "first name of member3";
-        details[9] = "SRN of member3";
+        details[4] = "Obiri";
+        details[5] = "Janine";
+        details[6] = "20037420";
+
+        details[7] = "Turnbull";
+        details[8] = "Lewis";
+        details[9] = "20052194";
 
 
-        details[10] = "surname of member4";
-        details[11] = "first name of member4";
-        details[12] = "SRN of member4";
+        details[10] = "Rehman";
+        details[11] = "Zohaib";
+        details[12] = "20070280";
 
     }
     
