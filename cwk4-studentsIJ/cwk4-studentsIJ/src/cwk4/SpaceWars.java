@@ -11,6 +11,8 @@ import java.io.*;
 
 public class SpaceWars implements WIN 
 {
+    private Battle[] battles;
+    private ArrayList<Force> forces;
 
 //**************** WIN **************************  
     /** Constructor requires the name of the admiral
