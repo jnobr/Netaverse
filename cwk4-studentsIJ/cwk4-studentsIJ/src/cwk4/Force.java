@@ -6,15 +6,15 @@ package cwk4;
  * @author Andrei Cirlig, Janine Obiri, Lewis Turnbull, Zohaib Rehman
  */
 abstract class Force {
-    private String fleetReference;
-    private String name;
-    private ForceState state;
-    private int activationFee;
-    private int battleStrength;
+    final private String fleetReference;
+    final private String name;
+    final private ForceState state;
+    final private int activationFee;
+    final private int battleStrength;
 
-    private boolean canSkirmish;
-    private boolean canAmbush;
-    private boolean canFight;
+    final private boolean canSkirmish;
+    final private boolean canAmbush;
+    final private boolean canFight;
 
     public Force(String fleetReference, String name, int activationFee, int battleStrength,
                  boolean canSkirmish, boolean canAmbush, boolean canFight) {
@@ -39,5 +39,37 @@ abstract class Force {
                 "\nCan skirmish: " + canSkirmish +
                 "\nCan ambush: " + canAmbush +
                 "\nCan fight: " + canFight;
+    }
+
+    public String getFleetReference() {
+        return fleetReference;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public ForceState getState() {
+        return state;
+    }
+
+    public int getActivationFee() {
+        return activationFee;
+    }
+
+    public int getBattleStrength() {
+        return battleStrength;
+    }
+
+    public boolean getCanSkirmish() {
+        return canSkirmish;
+    }
+
+    public boolean getCanAmbush() {
+        return canAmbush;
+    }
+
+    public boolean getCanFight() {
+        return canFight;
     }
 }
