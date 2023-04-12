@@ -11,8 +11,9 @@ import java.io.*;
 
 public class SpaceWars implements WIN 
 {
+    private Player player;
     private Battle[] battles;
-    private ArrayList<Force> forces;
+    private Force[] forces;
 
 //**************** WIN **************************  
     /** Constructor requires the name of the admiral
@@ -20,8 +21,7 @@ public class SpaceWars implements WIN
      */  
     public SpaceWars(String admiral)
     {
-       
-        
+       setupPlayer(admiral);
        setupForces();
        setupBattles();
     }
@@ -226,7 +226,30 @@ public class SpaceWars implements WIN
         return 999;
     }
     
+    public Force findForce(String ref) {
 
+        for(int i = 0; i < forces.length; i++)
+        {
+            Force temp = forces[i];
+            if (temp.getFleetReference() == ref)
+            {
+                return temp;
+            }
+        }
+        return null;
+    }
+    public Battle findBattle(int num)
+    {
+        for(int i = 0; i < battles.length; i++)
+        {
+            Battle temp = battles[i];
+            if (temp.getBattleNo() == num)
+            {
+                return temp;
+            }
+        }
+        return null;
+    }
 
     
     //*******************************************************************************
@@ -238,6 +261,11 @@ public class SpaceWars implements WIN
     private void setupBattles()
     {
         
+    }
+
+    private void setupPlayer(String name)
+    {
+        player = new Player(name);
     }
     
     //**************************Add your own private methos here ***********************
