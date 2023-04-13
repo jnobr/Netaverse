@@ -1,4 +1,5 @@
 package cwk4; 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.io.*;
 /**
@@ -14,6 +15,8 @@ public class SpaceWars implements WIN
     private Player player;
     private Battle[] battles;
     private Force[] forces;
+
+    private ArrayList<Force> UFF = new ArrayList<Force>();
 
 //**************** WIN **************************  
     /** Constructor requires the name of the admiral
@@ -55,6 +58,11 @@ public class SpaceWars implements WIN
      */
     public boolean isDefeated()
     {
+        if (player.getWarChest() <= 0) {return true;}
+
+
+
+
         return false;
     }
     
@@ -64,7 +72,7 @@ public class SpaceWars implements WIN
      */
     public int getWarchest()
     {
-        return 0;
+        return player.getWarChest();
     }
     
     /* Returns a list of all forces in the system by listing :
@@ -157,7 +165,7 @@ public class SpaceWars implements WIN
      **/
     public String getASFleet()
     {
-        String s = "\n****** Forces in the Active Star Fleet******\n";
+        String s = player.getASF();
         
         return s;
     }
@@ -179,7 +187,10 @@ public class SpaceWars implements WIN
      **/
      public boolean isBattle(int num)
      {
-         return false;
+         Battle temp = findBattle(num);
+         if (temp == null) {return false;}
+         else {return true;}
+
      }
     
     
