@@ -13,7 +13,7 @@ public class Battle {
     final private int losses;
     final private int gains;
 
-    private ArrayList<Force> forces = new ArrayList<Force>();
+    private Force playerForce;
     public Battle(int battleNo, BattleType type, String enemyName, int enemyStrength, int losses, int gains) {
         this.battleNo = battleNo;
         this.type = type;
@@ -59,7 +59,7 @@ public class Battle {
 
     public void addForce(Force f)
     {
-        forces.add(f);
+        playerForce = f;
     }
 
     public void battle()

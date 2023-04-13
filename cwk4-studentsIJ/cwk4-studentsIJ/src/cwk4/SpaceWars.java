@@ -141,7 +141,13 @@ public class SpaceWars implements WIN
      **/       
     public int activateForce(String ref)
     {
-        
+        Force force = findForce(ref);
+        if(force == null){return -1;}
+        else {
+            boolean found = player.inASF(ref);
+
+
+        }
         
         return -1;
     }
@@ -176,7 +182,8 @@ public class SpaceWars implements WIN
      **/
     public void recallForce(String ref)
     {
-        
+        Force force = findForce(ref);
+        force.recall();
     }   
             
     

@@ -8,7 +8,7 @@ package cwk4;
 abstract class Force {
     final private String fleetReference;
     final private String name;
-    final private ForceState state;
+    private ForceState state;
     final private int activationFee;
     final private int battleStrength;
 
@@ -74,11 +74,12 @@ abstract class Force {
     }
     public void activate()
     {
+        state = ForceState.ACTIVE;
 
     }
 
     public void recall()
     {
-
+        state = ForceState.DOCKED;
     }
 }

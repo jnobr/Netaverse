@@ -46,4 +46,27 @@ public class Player {
     {
         return null ;
     }
+
+    public Force findForce(String ref)
+
+    {
+        for(int i = 0; i < ASF.size(); i++)
+        {
+            Force temp = ASF.get(i);
+            if ((temp.getFleetReference()).equals(ref))
+            {
+                return temp;
+            }
+        }
+        return null;
+    }
+
+    public boolean inASF(String ref)
+    {
+        Force temp = findForce(ref);
+        if(temp == null){
+            return false;
+        }
+        return true;
+    }
 }
