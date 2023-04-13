@@ -72,4 +72,13 @@ abstract class Force {
     public boolean getCanFight() {
         return canFight;
     }
+    public void activate()
+    {
+
+    }
+
+    public void recall()
+    {
+
+    }
 }

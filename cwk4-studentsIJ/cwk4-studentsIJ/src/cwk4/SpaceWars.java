@@ -202,8 +202,11 @@ public class SpaceWars implements WIN
      **/
     public String getBattle(int num)
     {
+        Battle bat = findBattle(num);
+        if (bat == null) {return "No such battle";}
+        else {return bat.toString();}
         
-        return "No such battle";
+
     }
     
     /** Provides a String representation of all battles 

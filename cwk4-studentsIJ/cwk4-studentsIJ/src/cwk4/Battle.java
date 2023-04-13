@@ -1,5 +1,7 @@
 package cwk4;
 
+import java.util.ArrayList;
+
 /**
  * @author Andrei Cirlig, Janine Obiri, Lewis Turnbull, Zohaib Rehman
  */
@@ -11,6 +13,7 @@ public class Battle {
     final private int losses;
     final private int gains;
 
+    private ArrayList<Force> forces = new ArrayList<Force>();
     public Battle(int battleNo, BattleType type, String enemyName, int enemyStrength, int losses, int gains) {
         this.battleNo = battleNo;
         this.type = type;
@@ -52,5 +55,15 @@ public class Battle {
 
     public int getGains() {
         return gains;
+    }
+
+    public void addForce(Force f)
+    {
+        forces.add(f);
+    }
+
+    public void battle()
+    {
+
     }
 }
