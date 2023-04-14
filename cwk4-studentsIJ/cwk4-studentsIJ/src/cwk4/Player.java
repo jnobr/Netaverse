@@ -77,6 +77,7 @@ public class Player {
             Force temp = ASF.get(i);
             if (temp.getCanSkirmish() == true) {return temp;}
         }
+        return null;
     }
 
     public Force getAmbush()
@@ -86,6 +87,7 @@ public class Player {
             Force temp = ASF.get(i);
             if (temp.getCanAmbush() == true) {return temp;}
         }
+        return null;
     }
 
     public Force getFight()
@@ -95,5 +97,6 @@ public class Player {
             Force temp = ASF.get(i);
             if (temp.getCanFight() == true) {return temp;}
         }
+        return null;
     }
 }

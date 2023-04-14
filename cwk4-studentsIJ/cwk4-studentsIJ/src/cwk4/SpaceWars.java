@@ -248,6 +248,9 @@ public class SpaceWars implements WIN
         if (bat.getType() == BattleType.AMBUSH) {playerForce = player.getAmbush();}
         if (bat.getType() == BattleType.SKIRMISH) {playerForce = player.getSkirmish();}
         if (bat.getType() == BattleType.FIGHT) {playerForce = player.getFight();}
+
+        bat.addForce(playerForce);
+
         return 999;
     }
     
