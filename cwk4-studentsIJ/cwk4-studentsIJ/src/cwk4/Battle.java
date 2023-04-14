@@ -14,6 +14,7 @@ public class Battle {
     final private int gains;
 
     private Force playerForce;
+
     public Battle(int battleNo, BattleType type, String enemyName, int enemyStrength, int losses, int gains) {
         this.battleNo = battleNo;
         this.type = type;
@@ -62,6 +63,17 @@ public class Battle {
         playerForce = f;
     }
 
+    public boolean compare()
+    {
+         int strength = playerForce.getBattleStrength();
+
+         if (strength >= enemyStrength)
+         {
+             return true;
+         }
+         return false;
+
+    }
     public void battle()
     {
 

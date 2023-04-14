@@ -243,7 +243,11 @@ public class SpaceWars implements WIN
       */ 
     public int doBattle(int battleNo)
     {
-        
+        Force playerForce;
+        Battle bat = findBattle(battleNo);
+        if (bat.getType() == BattleType.AMBUSH) {playerForce = player.getAmbush();}
+        if (bat.getType() == BattleType.SKIRMISH) {playerForce = player.getSkirmish();}
+        if (bat.getType() == BattleType.FIGHT) {playerForce = player.getFight();}
         return 999;
     }
     
@@ -284,14 +288,16 @@ public class SpaceWars implements WIN
         
     }
 
+
+    
+    //**************************Add your own private methos here ***********************
+
     private void setupPlayer(String name)
     {
         player = new Player(name);
     }
-    
-    //**************************Add your own private methos here ***********************
 
-    
+
     
     //*******************************************************************************
   

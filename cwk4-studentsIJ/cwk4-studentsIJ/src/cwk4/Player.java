@@ -69,4 +69,31 @@ public class Player {
         }
         return true;
     }
+
+    public Force getSkirmish()
+    {
+        for (int i = 0; i < ASF.size(); i++) {
+
+            Force temp = ASF.get(i);
+            if (temp.getCanSkirmish() == true) {return temp;}
+        }
+    }
+
+    public Force getAmbush()
+    {
+        for (int i = 0; i < ASF.size(); i++) {
+
+            Force temp = ASF.get(i);
+            if (temp.getCanAmbush() == true) {return temp;}
+        }
+    }
+
+    public Force getFight()
+    {
+        for (int i = 0; i < ASF.size(); i++) {
+
+            Force temp = ASF.get(i);
+            if (temp.getCanFight() == true) {return temp;}
+        }
+    }
 }
