@@ -6,8 +6,8 @@ import java.io.*;
  * This class implements the behaviour expected from a WIN
  system as required for 5COM2007 - March 2023
  * 
- * @author Team ??
- * @version March 2023
+ * @author Team 4
+ * @version 15 April 2023
  */
 
 public class SpaceWars implements WIN 
@@ -58,7 +58,7 @@ public class SpaceWars implements WIN
      */
     public boolean isDefeated()
     {
-        if (player.getWarChest() <= 0) {return true;}
+        if ((player.getWarChest() <= 0) && player.returnSizeASF() == 0){return true;}
 
 
 
@@ -93,7 +93,12 @@ public class SpaceWars implements WIN
      **/
     public boolean isInUFFDock(String ref) 
     {
-        return false;
+         Force temp = findForceUFF(ref);
+
+         if(temp == null) {return false;}
+         else {
+             return true;
+         }
     }
     
     /**Returns a String representation of all forces in the United Forces Fleet(UFF) dock.
@@ -143,13 +148,16 @@ public class SpaceWars implements WIN
     {
         Force force = findForce(ref);
         if(force == null){return -1;}
-        else {
-            boolean found = player.inASF(ref);
-
-
+        else if ((player.inASF(ref) == true) || (isInUFFDock(ref) == false) )  {
+            return 1;
         }
-        
-        return -1;
+        player.addToASF(force);
+        if (player.inASF(ref) == false){ return 2;}
+        else {
+            removeFromUFF(force);
+            return 0;
+        }
+
     }
     
         
@@ -161,7 +169,8 @@ public class SpaceWars implements WIN
      **/
     public boolean isInASFleet(String ref)
     {
-        return false;
+        return player.inASF(ref);
+
     }
     
     /**Returns a String representation of the forces in the active 
@@ -184,6 +193,10 @@ public class SpaceWars implements WIN
     {
         Force force = findForce(ref);
         force.recall();
+        int moneyBack = force.getActivationFee()/2;
+        player.addToWarchest(moneyBack);
+        addToUFF(force);
+
     }   
             
     
@@ -243,15 +256,23 @@ public class SpaceWars implements WIN
       */ 
     public int doBattle(int battleNo)
     {
-        Force playerForce;
+
         Battle bat = findBattle(battleNo);
-        if (bat.getType() == BattleType.AMBUSH) {playerForce = player.getAmbush();}
-        if (bat.getType() == BattleType.SKIRMISH) {playerForce = player.getSkirmish();}
-        if (bat.getType() == BattleType.FIGHT) {playerForce = player.getFight();}
+        if (bat == null){return -1;}
+        Force playerForce = matchForceToBattle(bat);
 
         bat.addForce(playerForce);
+        int result = bat.battle();
+        if (result == 2)
+        {
+            if (matchForceToBattle(bat) == null)
+            {
+                result = 3;
+            }
 
-        return 999;
+        }
+
+        return result;
     }
     
     public Force findForce(String ref) {
@@ -300,6 +321,36 @@ public class SpaceWars implements WIN
         player = new Player(name);
     }
 
+    private Force matchForceToBattle(Battle bat)
+    {
+
+        if (bat.getType() == BattleType.AMBUSH) {return player.getAmbush();}
+        if (bat.getType() == BattleType.SKIRMISH) {return player.getSkirmish();}
+        if (bat.getType() == BattleType.FIGHT) {return player.getFight();}
+
+        return null;
+    }
+
+    private void addToUFF(Force f)
+    {
+        UFF.add(f);
+        player.removeFromASF(f);
+    }
+
+    private Force findForceUFF(String ref)
+    {
+        for (int i = 0; i < UFF.size(); i++)
+        {
+            Force temp = UFF.get(i);
+            if (temp.getFleetReference().equals(ref))
+            {return temp;}
+        }
+        return null;
+    }
+    private void removeFromUFF(Force f)
+    {
+        UFF.remove(f);
+    }
 
     
     //*******************************************************************************

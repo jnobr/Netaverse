@@ -80,6 +80,9 @@ abstract class Force {
 
     public void recall()
     {
+
         state = ForceState.DOCKED;
     }
+
+    public void destroy() {state = ForceState.DESTROYED;}
 }

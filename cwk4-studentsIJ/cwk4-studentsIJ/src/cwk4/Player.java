@@ -42,6 +42,14 @@ public class Player {
 
     }
 
+    public void addToWarchest(int m) {
+        warChest += m;
+    }
+    public void removeFromWarchest(int m)
+    {
+        warChest -= m;
+    }
+
     public String getASF()
     {
         return null ;
@@ -59,6 +67,21 @@ public class Player {
             }
         }
         return null;
+    }
+
+    public void removeFromASF(Force f)
+    {
+        ASF.remove(f);
+    }
+
+    public void addToASF(Force f){
+        int amount = f.getActivationFee();
+        if (warChest - amount >= 0) {
+            ASF.add(f);
+            warChest -= amount;
+            f.activate();
+        }
+
     }
 
     public boolean inASF(String ref)
@@ -98,5 +121,10 @@ public class Player {
             if (temp.getCanFight() == true) {return temp;}
         }
         return null;
+    }
+
+    public int returnSizeASF()
+    {
+        return ASF.size();
     }
 }

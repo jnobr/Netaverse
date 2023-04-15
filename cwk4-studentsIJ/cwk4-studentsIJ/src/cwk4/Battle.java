@@ -74,8 +74,22 @@ public class Battle {
          return false;
 
     }
-    public void battle()
+    public int battle()
     {
+        if (playerForce == null)
+        {return 1;}
+        else
+        {
+            if (compare() == true)
+            {
+                return 0;
+            }
+            else
+            {
+                playerForce.destroy();
+                return 2;
+            }
+        }
 
     }
 }
