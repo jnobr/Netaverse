@@ -304,12 +304,18 @@ public class SpaceWars implements WIN
     //*******************************************************************************
     private void setupForces()
     {
-        
+        Force f1 = new Wing("IW1","Twister",10);
+        Force f2 = new Starship("SS2","Enterprise",10,20)
+        Force f3 = new WarBird("WB3","Droop",false,100);
+        Force f4 = new Wing("IW4","Winger",20);
+        Force f5 = new WarBird("WB5","Hang",true,300);
+
+
     }
     
     private void setupBattles()
     {
-        
+        Battle b1 = new Battle(1,BattleType.FIGHT,"Borg",200,300,100);
     }
 
 
