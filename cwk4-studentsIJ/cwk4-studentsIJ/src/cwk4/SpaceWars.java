@@ -13,7 +13,7 @@ import java.io.*;
 public class SpaceWars implements WIN 
 {
     private Player player;
-    private ArrayList<Battle> battles;
+    private ArrayList<Battle> battles = new ArrayList<Battle>();
     private Force[] forces;
 
     private ArrayList<Force> UFF = new ArrayList<Force>();
@@ -314,7 +314,7 @@ public class SpaceWars implements WIN
     
     private void setupBattles()
     {
-       readBattles("battles");
+       readBattles("cwk4-studentsIJ/cwk4-studentsIJ/src/cwk4/battles.txt");
 
 
     }
@@ -408,19 +408,23 @@ public class SpaceWars implements WIN
       */
      private void readBattles(String fname)
      {
-         try {
-             File allBattles = new File(fname + ".txt");
+
+
+       try {
+             File allBattles = new File(fname);
              Scanner myIn = new Scanner(allBattles);
              int index = 0;
              while (myIn.hasNextLine()) {
 
                  Object[] line = myIn.nextLine().split(",");
-                 BattleType a = (BattleType) line[0];
+                 String temp = (String)line[0];
+                 BattleType a = BattleType.valueOf(temp);
                  String b = (String) line[1];
-                 int c =  (int) line[2];
-                 int d = (int) line[3];
-                 int e = (int) line[4];
-                 battles.add(new Battle(index, a,b,c,d,e));
+                 int c =  Integer.parseInt((String)line[2]);
+                 int d = Integer.parseInt((String)line[3]);
+                 int e = Integer.parseInt((String)line[4]);
+                 Battle battle = new Battle(index,a,b,c,d,e);
+                 battles.add(battle);
                  index += 1;
 
              }

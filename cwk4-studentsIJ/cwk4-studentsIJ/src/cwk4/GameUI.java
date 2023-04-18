@@ -44,6 +44,7 @@ public class GameUI
                 System.out.println("Enter Force reference");
                 myIn.nextLine();
                 String ref = (myIn.nextLine()).trim();
+
                 int res = gp.activateForce(ref);
                 System.out.println(activation(res));
             }
