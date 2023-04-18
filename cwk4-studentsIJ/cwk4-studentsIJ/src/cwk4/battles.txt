@@ -1,0 +1,8 @@
+Fight,Borg,200,300,100,
+Skirmish,Kardassians,700,200,120,
+Ambush,Ferengi,100,400,150,
+Fight,Ewoks,600,600,200,
+Ambush,Borg,500,400,90,
+Skirmish,Groaners,150,100,100,
+Fight, Borg,150,500,300,
+Ambush,Wailers,300,300,300, 
