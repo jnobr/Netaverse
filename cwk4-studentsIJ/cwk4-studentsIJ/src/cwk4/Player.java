@@ -12,7 +12,7 @@ public class Player {
     public Player(String n)
     {
         name = n;
-        warChest = 100;
+        warChest = 1000;
         score = 0;
         role = PlayerRole.ADMIRAL;
     }
@@ -58,9 +58,8 @@ public class Player {
     public Force findForce(String ref)
 
     {
-        for(int i = 0; i < ASF.size(); i++)
+        for(Force temp: ASF)
         {
-            Force temp = ASF.get(i);
             if ((temp.getFleetReference()).equals(ref))
             {
                 return temp;
@@ -95,9 +94,7 @@ public class Player {
 
     public Force getSkirmish()
     {
-        for (int i = 0; i < ASF.size(); i++) {
-
-            Force temp = ASF.get(i);
+        for (Force temp: ASF) {
             if (temp.getCanSkirmish() == true) {return temp;}
         }
         return null;
@@ -105,9 +102,7 @@ public class Player {
 
     public Force getAmbush()
     {
-        for (int i = 0; i < ASF.size(); i++) {
-
-            Force temp = ASF.get(i);
+        for (Force temp : ASF) {
             if (temp.getCanAmbush() == true) {return temp;}
         }
         return null;
@@ -115,9 +110,8 @@ public class Player {
 
     public Force getFight()
     {
-        for (int i = 0; i < ASF.size(); i++) {
+        for (Force temp: ASF) {
 
-            Force temp = ASF.get(i);
             if (temp.getCanFight() == true) {return temp;}
         }
         return null;

@@ -24,6 +24,8 @@ public class Battle {
         this.gains = gains;
     }
 
+
+
     @Override
     public String toString() {
         return "Battle number: " + battleNo +

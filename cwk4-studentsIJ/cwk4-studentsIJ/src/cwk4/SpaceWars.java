@@ -13,7 +13,7 @@ import java.io.*;
 public class SpaceWars implements WIN 
 {
     private Player player;
-    private Battle[] battles;
+    private ArrayList<Battle> battles;
     private Force[] forces;
 
     private ArrayList<Force> UFF = new ArrayList<Force>();
@@ -82,6 +82,12 @@ public class SpaceWars implements WIN
      */
     public String getAllForces()
     {
+        String s = "";
+        if (player.returnSizeASF() == 0) {
+            s = s + "\n" + "No forces in ASF";
+        }
+        else {
+            s = s + player.getASF();      }
         
         return "";
     }
@@ -130,6 +136,10 @@ public class SpaceWars implements WIN
      **/
     public String getForceDetails(String ref)
     {
+        Force force = findForce(ref);
+        if (force != null) {
+            return force.toString();
+        }
         
         
         return "\nNo such force";
@@ -235,6 +245,11 @@ public class SpaceWars implements WIN
     public String getAllBattles()
     {
         String s = "\n************ All Battles ************\n";
+
+        for (int i = 0; i < battles.size(); i++)
+        {
+            s = s + " \n " + battles.get(i).toString();
+        }
         
         return s;
     }
@@ -275,23 +290,53 @@ public class SpaceWars implements WIN
         return result;
     }
     
-    public Force findForce(String ref) {
 
-        for(int i = 0; i < forces.length; i++)
+
+    
+    //*******************************************************************************
+    private void setupForces()
+    {
+        Force f1 = new Wing("IW1","Twister",10);
+        Force f2 = new Starship("SS2","Enterprise",10,20);
+        Force f3 = new WarBird("WB3","Droop",false,100);
+        Force f4 = new Wing("IW4","Winger",20);
+        Force f5 = new WarBird("WB5","Hang",true,300);
+
+        forces = new Force[]{f1, f2, f3, f4, f5};
+
+        for (Force f : forces)
         {
-            Force temp = forces[i];
-            if (temp.getFleetReference() == ref)
+            UFF.add(f);
+        }
+
+
+    }
+    
+    private void setupBattles()
+    {
+       readBattles("battles");
+
+
+    }
+
+
+    
+    //**************************Add your own private methos here ***********************
+    private Force findForce(String ref) {
+
+        for(Force temp : forces)
+        {
+            if (temp.getFleetReference().equals(ref))
             {
                 return temp;
             }
         }
         return null;
     }
-    public Battle findBattle(int num)
+    private Battle findBattle(int num)
     {
-        for(int i = 0; i < battles.length; i++)
+        for(Battle temp : battles)
         {
-            Battle temp = battles[i];
             if (temp.getBattleNo() == num)
             {
                 return temp;
@@ -299,29 +344,6 @@ public class SpaceWars implements WIN
         }
         return null;
     }
-
-    
-    //*******************************************************************************
-    private void setupForces()
-    {
-        Force f1 = new Wing("IW1","Twister",10);
-        Force f2 = new Starship("SS2","Enterprise",10,20)
-        Force f3 = new WarBird("WB3","Droop",false,100);
-        Force f4 = new Wing("IW4","Winger",20);
-        Force f5 = new WarBird("WB5","Hang",true,300);
-
-
-    }
-    
-    private void setupBattles()
-    {
-        Battle b1 = new Battle(1,BattleType.FIGHT,"Borg",200,300,100);
-    }
-
-
-    
-    //**************************Add your own private methos here ***********************
-
     private void setupPlayer(String name)
     {
         player = new Player(name);
@@ -345,9 +367,8 @@ public class SpaceWars implements WIN
 
     private Force findForceUFF(String ref)
     {
-        for (int i = 0; i < UFF.size(); i++)
+        for (Force temp : UFF)
         {
-            Force temp = UFF.get(i);
             if (temp.getFleetReference().equals(ref))
             {return temp;}
         }
@@ -382,13 +403,34 @@ public class SpaceWars implements WIN
 //         
 //     }
 // 
-//     /** Reads information about battles from the specified file into the appropriate collection
-//      * @param the name of the file
-//      */
-//     private void readBattles(String fname)
-//     { 
-//         
-//     }
+     /** Reads information about battles from the specified file into the appropriate collection
+      * @param the name of the file
+      */
+     private void readBattles(String fname)
+     {
+         try {
+             File allBattles = new File(fname + ".txt");
+             Scanner myIn = new Scanner(allBattles);
+             int index = 0;
+             while (myIn.hasNextLine()) {
+
+                 Object[] line = myIn.nextLine().split(",");
+                 BattleType a = (BattleType) line[0];
+                 String b = (String) line[1];
+                 int c =  (int) line[2];
+                 int d = (int) line[3];
+                 int e = (int) line[4];
+                 battles.add(new Battle(index, a,b,c,d,e));
+                 index += 1;
+
+             }
+             myIn.close();
+         }
+         catch (FileNotFoundException e) {
+             e.printStackTrace();
+
+     }
+     }
 
 
 }

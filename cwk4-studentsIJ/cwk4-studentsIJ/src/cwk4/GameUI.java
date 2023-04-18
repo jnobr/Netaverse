@@ -40,21 +40,34 @@ public class GameUI
                 System.out.println(gp.getForceDetails(ref));
             } 
             else if (choice == 4) //activate Force
-            {   
-                
+            {
+                System.out.println("Enter Force reference");
+                myIn.nextLine();
+                String ref = (myIn.nextLine()).trim();
+                int res = gp.activateForce(ref);
+                System.out.println(activation(res));
             }
             else if (choice == 5) //List ASFleet
             {
-                
+                System.out.println(gp.getASFleet());
             }
             else if (choice == 6) //engage in a battle
             {
-                
+                System.out.println("Enter battle number: ");
+                int num = myIn.nextInt();
+                System.out.println(gp.doBattle(num));
+
                 
             }
             
             else if (choice == 7) //recall force
             {
+                System.out.println("Enter force reference: ");
+                myIn.nextLine();
+                String ref = (myIn.nextLine()).trim();
+                gp.recallForce(ref);
+                System.out.println("Force recalled");
+                System.out.println(gp.getForceDetails(ref));
                 
             }
             else if (choice==8) //view game state
