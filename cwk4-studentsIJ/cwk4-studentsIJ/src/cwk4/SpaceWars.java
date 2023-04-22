@@ -25,18 +25,18 @@ public class SpaceWars implements WIN
     {
        setupPlayer(admiral);
        setupForces();
-       setupBattles();
+       readBattles("battles.txt");
     }
     
     /** Second constructor - task 3.5
      *  To be added for task 3.5
      */
 
-    public SpaceWars(String admiral, String fname) {
-        setupPlayer(admiral);
-        setupForces();
-        //readBattles(fname);
-    }
+//    public SpaceWars(String admiral, String fname) {
+//        setupPlayer(admiral);
+//        setupForces();
+//        readBattles("battles.txt");
+//    }
 
 
      
@@ -395,60 +395,80 @@ public class SpaceWars implements WIN
      /** Writes whole game to the specified file
       * @param fname name of file storing requests
       */
-//     public void saveGame(String fname) throws IOException {   // uses object serialisation
-//        File save = new File(fname);
-//        if (!save.exists()) {save.createNewFile();}
-//
-//         try {
-//             FileWriter myWriter = new FileWriter(fname);
-//             myWriter.write("Files in Java might be tricky, but it is fun enough!");
-//             myWriter.close();
-//             System.out.println("Successfully wrote to the file.");
-//         } catch (IOException e) {
-//             System.out.println("An error occurred.");
-//             e.printStackTrace();
-//         }
-//     }
-//     }
+     public void saveGame(String fname) {   // uses object serialisation
+
+         try {
+             FileOutputStream fileOutputStream
+                     = new FileOutputStream(fname);
+             ObjectOutputStream objectOutputStream
+                     = new ObjectOutputStream(fileOutputStream);
+             SpaceWars s = new SpaceWars(player.getName());
+            objectOutputStream.writeObject(s);
+
+
+
+             objectOutputStream.flush();
+             objectOutputStream.close();
+         } catch (IOException e) {
+
+             e.printStackTrace();
+         }
+     }
+
 
      /** reads all information about the game from the specified file
       * and returns a SpaceWars object
       * @param fname name of file storing the game
       * @return the game (as a SpaceWars object)
       */
-//     public SpaceWars restoreGame(String fname)
-//     {
-//
-//     }
+     public SpaceWars restoreGame(String fname)
+     {
+         try {
+             FileInputStream fileInputStream
+                     = new FileInputStream(fname);
+             ObjectInputStream objectInputStream
+                     = new ObjectInputStream(fileInputStream);
+            SpaceWars s = (SpaceWars) objectInputStream.readObject();
+
+             objectInputStream.close();
+            return s;
+
+         }
+
+         catch (Exception e) {
+             e.printStackTrace();
+
+         }
+         return null;
+     }
+
+
 
      /** Reads information about battles from the specified file into the appropriate collection
       * @param the name of the file
       */
-//     private void readBattles(String fname)
-//     {
-//         try {
-//             Scanner myIn = new Scanner(fname);
-//             int index = 0;
-//             while (myIn.hasNextLine()) {
-//                 Object[] line = myIn.nextLine().split(",");
-//                 String temp = (String)line[0];
-//                 BattleType a = BattleType.valueOf(temp);
-//                 String b = (String) line[1];
-//                 int c =  Integer.parseInt((String)line[2]);
-//                 int d = Integer.parseInt((String)line[3]);
-//                 int e = Integer.parseInt((String)line[4]);
-//                 Battle battle = new Battle(index,a,b,c,d,e);
-//                 battles.add(battle);
-//                 index += 1;
-//
-//             }
-//             myIn.close();
-//         }
-//         catch (Exception e) {
-//             e.printStackTrace();
-//
-//         }
-  //   }
+     private void readBattles(String fname)
+     {
+         try {
+             FileInputStream fileInputStream
+                     = new FileInputStream(fname);
+             ObjectInputStream objectInputStream
+                     = new ObjectInputStream(fileInputStream);
+             Battle p2 = (Battle) objectInputStream.readObject();
+             while(p2 != null) {
+                 battles.add(p2);
+                 p2 = (Battle) objectInputStream.readObject();
+             }
+
+             objectInputStream.close();
+
+             }
+
+         catch (Exception e) {
+             e.printStackTrace();
+
+         }
+     }
 
 
 }

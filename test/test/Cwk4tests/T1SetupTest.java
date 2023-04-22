@@ -23,23 +23,23 @@ import cwk4.WIN;
  */
 public class T1SetupTest {
     WIN game;
-    
+
     public T1SetupTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
         game = new SpaceWars("David");
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -51,47 +51,47 @@ public class T1SetupTest {
         }
         return result;
     }
-    
+
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
-   
+
     @Test
     public void gameCorrectlyInitialised() {
         String result = game.toString();
-        String[] details = {""};
+        String[] details = {"David", "1000", ""};
         boolean actual = containsText(result, details);
         assertTrue(actual);
     }
-    
+
     @Test
     public void warChestWhenNoBattle() {
         int expected = 1000;
         int actual = game.getWarchest();
         assertEquals(expected, actual);
-    }  
-    
+    }
+
     @Test
     public void battleAtSetup() {
         boolean result = game.isBattle(3);
         assertTrue(result);
     }
-    
+
     @Test
     public void allBattleLoadedAtSetup() {
         boolean result = true;
         for (int i = 1; i < 8; i++) {
-            result = game.isBattle(i);
+            result = result && game.isBattle(i);
         }
         assertTrue(result);
     }
-    
+
     @Test
     public void forceInUFFAtSetup() {
         boolean result = game.isInUFFDock("IW1");
         assertTrue(result);
     }
-    
+
     @Test
     public void UFFleetLoadedAtTheBeginning() {
         boolean result = true;
@@ -102,8 +102,8 @@ public class T1SetupTest {
         }
         assertTrue(result);
     }
-    
-    
+
+
     @Test
     public void ASFleetEmptyAtTheBeginning() {
         boolean result = true;
@@ -114,9 +114,9 @@ public class T1SetupTest {
         }
         assertTrue(result);
     }
-    
-    
-    
+
+
+
     @Test
     public void detailsOfWB3() {
         String str = game.getForceDetails("WB3");
@@ -124,7 +124,7 @@ public class T1SetupTest {
         boolean result = containsText(str, target);
         assertTrue(result);
     }
-    
+
     @Test
     public void detailsOfSS2() {
         String str = game.getForceDetails("SS2");
@@ -132,27 +132,27 @@ public class T1SetupTest {
         boolean result = containsText(str, target);
         assertTrue(result);
     }
-    
+
     @Test
     public void detailsOfIW1() {
         String str = game.getForceDetails("IW1");
-        String[] target = {"IW1","Twister","200","200","In dock","10"};
+        String[] target = {"IW1","Twisters","200","200","In dock","10"};
         boolean result = containsText(str, target);
         assertTrue(result);
     }
-    
+
     @Test
     public void detailsOfNonExistantForce() {
-        String str = game.getForceDetails("XX3");        
+        String str = game.getForceDetails("XX3");
         String[] target = {"No such force"};
         boolean result = containsText(str, target);
         assertTrue(result);
     }
-    
+
     @Test
     public void detailsOfBattle() {
-        String str = game.getBattle(2);        
-        String[] details = {"2", "SKIRMISH", "Kardassians", "700", "200", "120"};
+        String str = game.getBattle(2);
+        String[] details = {"2", "Skirmish", "Kardassians", "700", "200", "120"};
         boolean result = containsText(str, details);
         assertTrue(result);
     }
