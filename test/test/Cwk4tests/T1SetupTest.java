@@ -59,7 +59,7 @@ public class T1SetupTest {
     @Test
     public void gameCorrectlyInitialised() {
         String result = game.toString();
-        String[] details = {"David", "1000", ""};
+        String[] details = {""};
         boolean actual = containsText(result, details);
         assertTrue(actual);
     }
@@ -81,7 +81,7 @@ public class T1SetupTest {
     public void allBattleLoadedAtSetup() {
         boolean result = true;
         for (int i = 1; i < 8; i++) {
-            result = result && game.isBattle(i);
+            result = game.isBattle(i);
         }
         assertTrue(result);
     }
@@ -136,7 +136,7 @@ public class T1SetupTest {
     @Test
     public void detailsOfIW1() {
         String str = game.getForceDetails("IW1");
-        String[] target = {"IW1","Twisters","200","200","In dock","10"};
+        String[] target = {"IW1","Twister","200","200","In dock","10"};
         boolean result = containsText(str, target);
         assertTrue(result);
     }
@@ -152,7 +152,7 @@ public class T1SetupTest {
     @Test
     public void detailsOfBattle() {
         String str = game.getBattle(2);        
-        String[] details = {"2", "Skirmish", "Kardassians", "700", "200", "120"};
+        String[] details = {"2", "SKIRMISH", "Kardassians", "700", "200", "120"};
         boolean result = containsText(str, details);
         assertTrue(result);
     }

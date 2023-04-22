@@ -8,7 +8,7 @@ import java.io.*;
  */
 public enum BattleType implements Serializable
 {
-    SKIRMISH("Skirmish"), AMBUSH("Ambush"), FIGHT("Fight");
+    SKIRMISH("SKIRMISH"), AMBUSH("AMBUSH"), FIGHT("FIGHT");
     private String type;
     
     private BattleType(String ty)

@@ -1,11 +1,11 @@
 package cwk4;
 
 import java.util.ArrayList;
-
+import java.io.Serializable;
 /**
  * @author Andrei Cirlig, Janine Obiri, Lewis Turnbull, Zohaib Rehman
  */
-public class Battle {
+public class Battle implements Serializable{
     final private int battleNo;
     final private BattleType type;
     final private String enemyName;
