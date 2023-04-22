@@ -52,7 +52,12 @@ public class Player {
 
     public String getASF()
     {
-        return null ;
+        String s = "";
+        for (Force temp: ASF) {
+            s = s + temp.toString();
+        }
+        return s;
+
     }
 
     public Force findForce(String ref)
