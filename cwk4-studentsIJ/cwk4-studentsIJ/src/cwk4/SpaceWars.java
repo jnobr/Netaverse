@@ -5,12 +5,17 @@ import java.io.*;
  * This class implements the behaviour expected from a WIN
  system as required for 5COM2007 - March 2023
  * 
- * @author Team ??
- * @version March 2023
+ * @author Team 4
+ * @version 15 April 2023
  */
 
 public class SpaceWars implements WIN 
 {
+    private Player player;
+    private ArrayList<Battle> battles = new ArrayList<Battle>();
+    private Force[] forces;
+
+    private ArrayList<Force> UFF = new ArrayList<Force>();
 
 //**************** WIN **************************  
     /** Constructor requires the name of the admiral
@@ -18,15 +23,22 @@ public class SpaceWars implements WIN
      */  
     public SpaceWars(String admiral)
     {
-       
-        
+       setupPlayer(admiral);
        setupForces();
-       setupBattles();
+       readBattles("battles.txt");
     }
     
     /** Second constructor - task 3.5
      *  To be added for task 3.5
      */
+
+//    public SpaceWars(String admiral, String fname) {
+//        setupPlayer(admiral);
+//        setupForces();
+//        readBattles("battles.txt");
+//    }
+
+
      
     
     
@@ -53,6 +65,11 @@ public class SpaceWars implements WIN
      */
     public boolean isDefeated()
     {
+        if ((player.getWarChest() <= 0) && player.returnSizeASF() == 0){return true;}
+
+
+
+
         return false;
     }
     
@@ -62,7 +79,7 @@ public class SpaceWars implements WIN
      */
     public int getWarchest()
     {
-        return 0;
+        return player.getWarChest();
     }
     
     /* Returns a list of all forces in the system by listing :
@@ -72,6 +89,12 @@ public class SpaceWars implements WIN
      */
     public String getAllForces()
     {
+        String s = "";
+        if (player.returnSizeASF() == 0) {
+            s = s + "\n" + "No forces in ASF";
+        }
+        else {
+            s = s + player.getASF();      }
         
         return "";
     }
@@ -83,7 +106,12 @@ public class SpaceWars implements WIN
      **/
     public boolean isInUFFDock(String ref) 
     {
-        return false;
+         Force temp = findForceUFF(ref);
+
+         if(temp == null) {return false;}
+         else {
+             return true;
+         }
     }
     
     /**Returns a String representation of all forces in the United Forces Fleet(UFF) dock.
@@ -115,6 +143,10 @@ public class SpaceWars implements WIN
      **/
     public String getForceDetails(String ref)
     {
+        Force force = findForce(ref);
+        if (force != null) {
+            return force.toString();
+        }
         
         
         return "\nNo such force";
@@ -131,9 +163,18 @@ public class SpaceWars implements WIN
      **/       
     public int activateForce(String ref)
     {
-        
-        
-        return -1;
+        Force force = findForce(ref);
+        if(force == null){return -1;}
+        else if ((player.inASF(ref) == true) || (isInUFFDock(ref) == false) )  {
+            return 1;
+        }
+        player.addToASF(force);
+        if (player.inASF(ref) == false){ return 2;}
+        else {
+            removeFromUFF(force);
+            return 0;
+        }
+
     }
     
         
@@ -145,7 +186,8 @@ public class SpaceWars implements WIN
      **/
     public boolean isInASFleet(String ref)
     {
-        return false;
+        return player.inASF(ref);
+
     }
     
     /**Returns a String representation of the forces in the active 
@@ -155,7 +197,7 @@ public class SpaceWars implements WIN
      **/
     public String getASFleet()
     {
-        String s = "\n****** Forces in the Active Star Fleet******\n";
+        String s = player.getASF();
         
         return s;
     }
@@ -166,7 +208,12 @@ public class SpaceWars implements WIN
      **/
     public void recallForce(String ref)
     {
-        
+        Force force = findForce(ref);
+        force.recall();
+        int moneyBack = force.getActivationFee()/2;
+        player.addToWarchest(moneyBack);
+        addToUFF(force);
+
     }   
             
     
@@ -177,7 +224,10 @@ public class SpaceWars implements WIN
      **/
      public boolean isBattle(int num)
      {
-         return false;
+         Battle temp = findBattle(num);
+         if (temp == null) {return false;}
+         else {return true;}
+
      }
     
     
@@ -189,8 +239,11 @@ public class SpaceWars implements WIN
      **/
     public String getBattle(int num)
     {
+        Battle bat = findBattle(num);
+        if (bat == null) {return "No such battle";}
+        else {return bat.toString();}
         
-        return "No such battle";
+
     }
     
     /** Provides a String representation of all battles 
@@ -199,6 +252,11 @@ public class SpaceWars implements WIN
     public String getAllBattles()
     {
         String s = "\n************ All Battles ************\n";
+
+        for (int i = 0; i < battles.size(); i++)
+        {
+            s = s + " \n " + battles.get(i).toString();
+        }
         
         return s;
     }
@@ -220,8 +278,23 @@ public class SpaceWars implements WIN
       */ 
     public int doBattle(int battleNo)
     {
-        
-        return 999;
+
+        Battle bat = findBattle(battleNo);
+        if (bat == null){return -1;}
+        Force playerForce = matchForceToBattle(bat);
+
+        bat.addForce(playerForce);
+        int result = bat.battle();
+        if (result == 2)
+        {
+            if (matchForceToBattle(bat) == null)
+            {
+                result = 3;
+            }
+
+        }
+
+        return result;
     }
     
 
@@ -230,48 +303,172 @@ public class SpaceWars implements WIN
     //*******************************************************************************
     private void setupForces()
     {
-        
+        Force f1 = new Wing("IW1","Twister",10);
+        Force f2 = new Starship("SS2","Enterprise",10,20);
+        Force f3 = new WarBird("WB3","Droop",false,100);
+        Force f4 = new Wing("IW4","Winger",20);
+        Force f5 = new WarBird("WB5","Hang",true,300);
+
+        forces = new Force[]{f1, f2, f3, f4, f5};
+
+        for (Force f : forces)
+        {
+            UFF.add(f);
+        }
+
+
     }
     
     private void setupBattles()
     {
-        
+
+
+
     }
-    
-    //**************************Add your own private methos here ***********************
+
 
     
+    //**************************Add your own private methos here ***********************
+    private Force findForce(String ref) {
+
+        for(Force temp : forces)
+        {
+            if (temp.getFleetReference().equals(ref))
+            {
+                return temp;
+            }
+        }
+        return null;
+    }
+    private Battle findBattle(int num)
+    {
+        for(Battle temp : battles)
+        {
+            if (temp.getBattleNo() == num)
+            {
+                return temp;
+            }
+        }
+        return null;
+    }
+    private void setupPlayer(String name)
+    {
+        player = new Player(name);
+    }
+
+    private Force matchForceToBattle(Battle bat)
+    {
+
+        if (bat.getType() == BattleType.AMBUSH) {return player.getAmbush();}
+        if (bat.getType() == BattleType.SKIRMISH) {return player.getSkirmish();}
+        if (bat.getType() == BattleType.FIGHT) {return player.getFight();}
+
+        return null;
+    }
+
+    private void addToUFF(Force f)
+    {
+        UFF.add(f);
+        player.removeFromASF(f);
+    }
+
+    private Force findForceUFF(String ref)
+    {
+        for (Force temp : UFF)
+        {
+            if (temp.getFleetReference().equals(ref))
+            {return temp;}
+        }
+        return null;
+    }
+    private void removeFromUFF(Force f)
+    {
+        UFF.remove(f);
+    }
+
     
     //*******************************************************************************
   
     //These methods are not needed until Task 3.5. Uncomment thmemto complete task 3.5
     // ***************   file write/read  *********************
  
-//     /** Writes whole game to the specified file
-//      * @param fname name of file storing requests
-//      */
-//     public void saveGame(String fname)
-//     {   // uses object serialisation 
-//         
-//     }
-//     
-//     /** reads all information about the game from the specified file 
-//      * and returns a SpaceWars object
-//      * @param fname name of file storing the game
-//      * @return the game (as a SpaceWars object)
-//      */
-//     public SpaceWars restoreGame(String fname)
-//     {    
-//         
-//     }
-// 
-//     /** Reads information about battles from the specified file into the appropriate collection
-//      * @param the name of the file
-//      */
-//     private void readBattles(String fname)
-//     { 
-//         
-//     }
+     /** Writes whole game to the specified file
+      * @param fname name of file storing requests
+      */
+     public void saveGame(String fname) {   // uses object serialisation
+
+         try {
+             FileOutputStream fileOutputStream
+                     = new FileOutputStream(fname);
+             ObjectOutputStream objectOutputStream
+                     = new ObjectOutputStream(fileOutputStream);
+             SpaceWars s = new SpaceWars(player.getName());
+            objectOutputStream.writeObject(s);
+
+
+
+             objectOutputStream.flush();
+             objectOutputStream.close();
+         } catch (IOException e) {
+
+             e.printStackTrace();
+         }
+     }
+
+
+     /** reads all information about the game from the specified file
+      * and returns a SpaceWars object
+      * @param fname name of file storing the game
+      * @return the game (as a SpaceWars object)
+      */
+     public SpaceWars restoreGame(String fname)
+     {
+         try {
+             FileInputStream fileInputStream
+                     = new FileInputStream(fname);
+             ObjectInputStream objectInputStream
+                     = new ObjectInputStream(fileInputStream);
+            SpaceWars s = (SpaceWars) objectInputStream.readObject();
+
+             objectInputStream.close();
+            return s;
+
+         }
+
+         catch (Exception e) {
+             e.printStackTrace();
+
+         }
+         return null;
+     }
+
+
+
+     /** Reads information about battles from the specified file into the appropriate collection
+      * @param the name of the file
+      */
+     private void readBattles(String fname)
+     {
+         try {
+             FileInputStream fileInputStream
+                     = new FileInputStream(fname);
+             ObjectInputStream objectInputStream
+                     = new ObjectInputStream(fileInputStream);
+             Battle p2 = (Battle) objectInputStream.readObject();
+             while(p2 != null) {
+                 battles.add(p2);
+                 p2 = (Battle) objectInputStream.readObject();
+             }
+
+             objectInputStream.close();
+
+             }
+
+         catch (Exception e) {
+             e.printStackTrace();
+
+         }
+     }
 
 
 }

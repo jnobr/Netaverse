@@ -40,21 +40,35 @@ public class GameUI
                 System.out.println(gp.getForceDetails(ref));
             } 
             else if (choice == 4) //activate Force
-            {   
-                
+            {
+                System.out.println("Enter Force reference");
+                myIn.nextLine();
+                String ref = (myIn.nextLine()).trim();
+
+                int res = gp.activateForce(ref);
+                System.out.println(activation(res));
             }
             else if (choice == 5) //List ASFleet
             {
-                
+                System.out.println(gp.getASFleet());
             }
             else if (choice == 6) //engage in a battle
             {
-                
+                System.out.println("Enter battle number: ");
+                int num = myIn.nextInt();
+                System.out.println(gp.doBattle(num));
+
                 
             }
             
             else if (choice == 7) //recall force
             {
+                System.out.println("Enter force reference: ");
+                myIn.nextLine();
+                String ref = (myIn.nextLine()).trim();
+                gp.recallForce(ref);
+                System.out.println("Force recalled");
+                System.out.println(gp.getForceDetails(ref));
                 
             }
             else if (choice==8) //view game state
@@ -62,17 +76,18 @@ public class GameUI
                 System.out.println(gp.toString());
             }
             // Uncomment after task 3.5
-//             else if (choice == 9) // Task 3.5 only
-//             {
-//                 System.out.println("Write to file");
-//                 gp.saveGame("battles.txt");
-//             }
-//             else if (choice == 10) // Task 3.5 only
-//             {
-//                 System.out.println("Restore from file");
-//                 gp = gp.restoreGame("olenka.txt");
-//                 System.out.println(gp.toString());               
-//             }  
+             else if (choice == 9) // Task 3.5 only
+             {
+                 System.out.println("Write to file");
+
+                 ((SpaceWars) gp).saveGame("battles.txt");
+             }
+             else if (choice == 10) // Task 3.5 only
+             {
+                 System.out.println("Restore from file");
+                 gp = gp.restoreGame("olenka.txt");
+                 System.out.println(gp.toString());
+             }
         }  
         System.out.println("Thank-you");
     }
@@ -91,8 +106,8 @@ public class GameUI
         System.out.println("7. Recall a force");
         System.out.println("8. View the state of the game");
         //For Task 3.5 only
-//         System.out.println("9. Save this game");
-//         System.out.println("10. Restore a game");
+         System.out.println("9. Save this game");
+         System.out.println("10. Restore a game");
        
         
         while (choice < 0 || choice  > 10)

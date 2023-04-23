@@ -135,9 +135,11 @@ public interface WIN extends Serializable
       * @return an int showing the result of the battle (see above)
       */ 
     public int doBattle(int battleNo);
-    
 
-   // ***************   file write/read  *********************
+    WIN restoreGame(String s);
+
+
+    // ***************   file write/read  *********************
 //    /** Writes whole game to the specified file
 //    * @param fname name of file storing requests
 //     */
