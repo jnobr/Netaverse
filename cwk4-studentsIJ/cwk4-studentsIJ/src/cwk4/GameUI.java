@@ -76,18 +76,18 @@ public class GameUI
                 System.out.println(gp.toString());
             }
             // Uncomment after task 3.5
-//             else if (choice == 9) // Task 3.5 only
-//             {
-//                 System.out.println("Write to file");
-//
-//                 gp.saveGame("battles.txt");
-//             }
-//             else if (choice == 10) // Task 3.5 only
-//             {
-//                 System.out.println("Restore from file");
-//                 gp = gp.restoreGame("olenka.txt");
-//                 System.out.printlhn(gp.toString());
-//             }
+             else if (choice == 9) // Task 3.5 only
+             {
+                 System.out.println("Write to file");
+
+                 ((SpaceWars) gp).saveGame("battles.txt");
+             }
+             else if (choice == 10) // Task 3.5 only
+             {
+                 System.out.println("Restore from file");
+                 gp = gp.restoreGame("olenka.txt");
+                 System.out.println(gp.toString());
+             }
         }  
         System.out.println("Thank-you");
     }
