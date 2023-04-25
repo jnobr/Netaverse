@@ -1,5 +1,4 @@
 package cwk4; 
-import java.io.*;
 import java.util.*;
 
 /**
@@ -15,11 +14,9 @@ public class GameUI
     private void playGame()
     {
         int choice;
-        String admiralName;
-        int result = -1;
-        System.out.println("Enter admiral's name");
+        System.out.print("Enter admiral's name: ");
         String s = myIn.nextLine();
-        WIN gp = new SpaceWars(s); 
+        WIN gp = new SpaceWars(s, "battles.txt");
         choice = 100;
         while (choice != 0 )
         {
@@ -34,14 +31,14 @@ public class GameUI
             }
             else if (choice == 3) //get Force
             {
-                System.out.println("Enter Force reference");
+                System.out.print("Enter Force reference: ");
                 myIn.nextLine();
                 String ref = (myIn.nextLine()).trim();
                 System.out.println(gp.getForceDetails(ref));
             } 
             else if (choice == 4) //activate Force
             {
-                System.out.println("Enter Force reference");
+                System.out.print("Enter Force reference: ");
                 myIn.nextLine();
                 String ref = (myIn.nextLine()).trim();
 
@@ -54,16 +51,19 @@ public class GameUI
             }
             else if (choice == 6) //engage in a battle
             {
-                System.out.println("Enter battle number: ");
-                int num = myIn.nextInt();
-                System.out.println(gp.doBattle(num));
-
-                
+                System.out.print("Enter battle number: ");
+                try {
+                    int num = myIn.nextInt();
+                    int result = gp.doBattle(num);
+                    System.out.println(battleTextResult(result));
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input.");
+                }
             }
             
             else if (choice == 7) //recall force
             {
-                System.out.println("Enter force reference: ");
+                System.out.print("Enter force reference: ");
                 myIn.nextLine();
                 String ref = (myIn.nextLine()).trim();
                 gp.recallForce(ref);
@@ -73,14 +73,14 @@ public class GameUI
             }
             else if (choice==8) //view game state
             {
-                System.out.println(gp.toString());
+                System.out.println(gp);
             }
             // Uncomment after task 3.5
              else if (choice == 9) // Task 3.5 only
              {
                  System.out.println("Write to file");
 
-                 ((SpaceWars) gp).saveGame("battles.txt");
+                 ((SpaceWars) gp).saveGame("olenka.txt");
              }
              else if (choice == 10) // Task 3.5 only
              {
@@ -112,7 +112,7 @@ public class GameUI
         
         while (choice < 0 || choice  > 10)
         {
-            System.out.println("Enter the number of your choice");
+            System.out.print("Enter the number of your choice: ");
             choice =  myIn.nextInt();
         }
         return choice;        
@@ -125,12 +125,21 @@ public class GameUI
             case 0:return "force is activated"; 
             case 1:return "force is not in the UFFDock"; 
             case 2:return "not enough money";
-            case 3:return "no such force";
+            case -1:return "no such force";
             default: return "Error";
         }
     }
     
-
+    private String battleTextResult(int code) {
+        switch (code) {
+            case 0: return "Battle won.";
+            case 1: return "Battle lost: no suitable force available.";
+            case 2: return "Battle lost: enemy force was stronger than player's";
+            case 3: return "Battle lost: Admiral is defeated.";
+            case -1: return "No such battle";
+            default: return "Error";
+        }
+    }
     
     public static void main(String[] args)
     {

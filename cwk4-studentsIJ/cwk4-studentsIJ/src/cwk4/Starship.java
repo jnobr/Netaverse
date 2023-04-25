@@ -18,7 +18,7 @@ public class Starship extends Force {
     @Override
     public String toString() {
         return super.toString() +
-                "\nLaser canon: " + laserCanons +
+                "\nLaser canons: " + laserCanons +
                 "\nPhoton torpedoes: " + photonTorpedoes;
     }
 

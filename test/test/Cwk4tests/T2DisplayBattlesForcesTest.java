@@ -94,7 +94,7 @@ public class T2DisplayBattlesForcesTest {
     @Test
     public void forceFleetIW1Displayed() {
         String result = swim.getForcesInDock();
-        boolean actual = containsText2(result, "IW1", "Twisters", "");
+        boolean actual = containsText2(result, "IW1", "Twister", "");
         assertTrue(actual);
     }
     
@@ -117,7 +117,7 @@ public class T2DisplayBattlesForcesTest {
     @Test
     public void forceFleetIW4Displayed() {
         String result = swim.getForcesInDock();
-        boolean actual = containsText2(result, "IW4", "Wingers", "");
+        boolean actual = containsText2(result, "IW4", "Winger", "");
         assertTrue(actual);
     }
     
@@ -152,7 +152,7 @@ public class T2DisplayBattlesForcesTest {
     @Test
     public void forceFleetIW10Displayed() {
         String result = swim.getForcesInDock();
-        boolean actual = containsText2(result, "IW10", "Flyers", "");
+        boolean actual = containsText2(result, "IW10", "Flyer", "");
         assertTrue(actual);
     }
 }

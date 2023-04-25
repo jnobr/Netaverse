@@ -1,11 +1,13 @@
 package cwk4;
 
 
+import java.io.Serializable;
+
 /**
  * Represents a force that can be inherited from, but never instantiated itself.
  * @author Andrei Cirlig, Janine Obiri, Lewis Turnbull, Zohaib Rehman
  */
-abstract class Force {
+abstract class Force implements Serializable {
     final private String fleetReference;
     final private String name;
     private ForceState state;
@@ -80,9 +82,10 @@ abstract class Force {
 
     public void recall()
     {
-
         state = ForceState.DOCKED;
     }
 
-    public void destroy() {state = ForceState.DESTROYED;}
+    public void destroy() {
+        state = ForceState.DESTROYED;
+    }
 }

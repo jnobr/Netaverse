@@ -1,6 +1,8 @@
 package cwk4; 
+import java.sql.Array;
 import java.util.*;
 import java.io.*;
+
 /**
  * This class implements the behaviour expected from a WIN
  system as required for 5COM2007 - March 2023
@@ -9,13 +11,13 @@ import java.io.*;
  * @version 15 April 2023
  */
 
-public class SpaceWars implements WIN 
+public class SpaceWars implements WIN, Serializable
 {
-    private Player player;
-    private ArrayList<Battle> battles = new ArrayList<Battle>();
-    private Force[] forces;
+    private String admiralName;
+    private int warChest = 1000;
 
-    private ArrayList<Force> UFF = new ArrayList<Force>();
+    private Force[] forces;
+    private Battle[] battles;
 
 //**************** WIN **************************  
     /** Constructor requires the name of the admiral
@@ -23,24 +25,21 @@ public class SpaceWars implements WIN
      */  
     public SpaceWars(String admiral)
     {
-       setupPlayer(admiral);
-       setupForces();
-       readBattles("battles.txt");
+        admiralName = admiral;
+
+        setupForces();
+        setupBattles();
     }
     
     /** Second constructor - task 3.5
      *  To be added for task 3.5
      */
+    public SpaceWars(String admiral, String fname) {
+        admiralName = admiral;
 
-//    public SpaceWars(String admiral, String fname) {
-//        setupPlayer(admiral);
-//        setupForces();
-//        readBattles("battles.txt");
-//    }
-
-
-     
-    
+        setupForces();
+        readBattles(fname);
+    }
     
     /**Returns a String representation of the state of the game,
      * including the name of the admiral, state of the war chest,
@@ -53,11 +52,14 @@ public class SpaceWars implements WIN
      **/
     public String toString()
     {
-        
-        return "";
+        String s = "Admiral name: " + admiralName;
+        s += "\nWar chest balance: " + getWarchest() + " bit coins";
+        s += "\n" + getASFleet();
+
+        return s;
     }
-        
-      
+
+
     /** returns true if war chest <=0 AND the active Star Fleet(ASF) has no 
      * forces which can be recalled. 
      * @returns true if war chest <=0 and the active Star Fleet(ASF) has no 
@@ -65,12 +67,7 @@ public class SpaceWars implements WIN
      */
     public boolean isDefeated()
     {
-        if ((player.getWarChest() <= 0) && player.returnSizeASF() == 0){return true;}
-
-
-
-
-        return false;
+        return ((warChest <= 0) && getForceObjectsByState(ForceState.ACTIVE).length == 0);
     }
     
     
@@ -79,7 +76,7 @@ public class SpaceWars implements WIN
      */
     public int getWarchest()
     {
-        return player.getWarChest();
+        return warChest;
     }
     
     /* Returns a list of all forces in the system by listing :
@@ -89,14 +86,14 @@ public class SpaceWars implements WIN
      */
     public String getAllForces()
     {
+        //Appropriate "no such forces" messages are returned when criteria are met inside each method called here.
         String s = "";
-        if (player.returnSizeASF() == 0) {
-            s = s + "\n" + "No forces in ASF";
-        }
-        else {
-            s = s + player.getASF();      }
-        
-        return "";
+
+        s += getASFleet();
+        s += getForcesInDock();
+        s += getDestroyedForces();
+
+        return s;
     }
         
     
@@ -106,12 +103,7 @@ public class SpaceWars implements WIN
      **/
     public boolean isInUFFDock(String ref) 
     {
-         Force temp = findForceUFF(ref);
-
-         if(temp == null) {return false;}
-         else {
-             return true;
-         }
+        return findForce(ref) != null;
     }
     
     /**Returns a String representation of all forces in the United Forces Fleet(UFF) dock.
@@ -122,7 +114,16 @@ public class SpaceWars implements WIN
     {   
         String s = "\n\n************ Forces available in UFFleet Dock********\n";
         
-        
+        Force[] dockedForces = getDockedForceObjects();
+
+        if (dockedForces.length == 0) {
+            s += "\nNo forces in dock";
+        } else {
+            for (Force force : dockedForces) {
+                s += "\n" + force.toString() + "\n";
+            }
+        }
+
         return s;
     }
     
@@ -131,8 +132,17 @@ public class SpaceWars implements WIN
      */
     public String getDestroyedForces()
     {
-        String s ="\n***** Destroyed Forces ****\n";
-        
+        String s = "\n***** Destroyed Forces ****\n";
+
+        Force[] destroyedForces = getDestroyedForceObjects();
+
+        if (destroyedForces.length == 0) {
+            s += "\nNo destroyed forces";
+        } else {
+            for (Force force : destroyedForces) {
+                s += "\n" + force.toString();
+            }
+        }
         
         return s;
     }
@@ -144,11 +154,11 @@ public class SpaceWars implements WIN
     public String getForceDetails(String ref)
     {
         Force force = findForce(ref);
+
         if (force != null) {
             return force.toString();
         }
-        
-        
+
         return "\nNo such force";
     }     
     
@@ -164,16 +174,22 @@ public class SpaceWars implements WIN
     public int activateForce(String ref)
     {
         Force force = findForce(ref);
-        if(force == null){return -1;}
-        else if ((player.inASF(ref) == true) || (isInUFFDock(ref) == false) )  {
+
+        if (force == null) {
+            return -1;
+        }
+
+        if (force.getState() != ForceState.DOCKED) {
             return 1;
         }
-        player.addToASF(force);
-        if (player.inASF(ref) == false){ return 2;}
-        else {
-            removeFromUFF(force);
-            return 0;
+
+        if (force.getActivationFee() > warChest) {
+            return 2;
         }
+
+        force.activate();
+        warChest -= force.getActivationFee();
+        return 0;
 
     }
     
@@ -186,8 +202,13 @@ public class SpaceWars implements WIN
      **/
     public boolean isInASFleet(String ref)
     {
-        return player.inASF(ref);
+        Force force = findForce(ref);
 
+        if (force == null) {
+            return false;
+        }
+
+        return force.getState() == ForceState.ACTIVE;
     }
     
     /**Returns a String representation of the forces in the active 
@@ -197,8 +218,18 @@ public class SpaceWars implements WIN
      **/
     public String getASFleet()
     {
-        String s = player.getASF();
-        
+        String s = "\n****** Forces in the Active Star Fleet******\n";
+
+        Force[] asf = getASFObjects();
+
+        if (asf.length == 0) {
+            s += "No forces activated";
+        } else {
+            for (Force force : asf) {
+                s += "\n" + force.toString();
+            }
+        }
+
         return s;
     }
     
@@ -209,11 +240,15 @@ public class SpaceWars implements WIN
     public void recallForce(String ref)
     {
         Force force = findForce(ref);
-        force.recall();
-        int moneyBack = force.getActivationFee()/2;
-        player.addToWarchest(moneyBack);
-        addToUFF(force);
 
+        if (force == null || force.getState() != ForceState.ACTIVE) {
+            return;
+        }
+
+        force.recall();
+
+        int moneyBack = force.getActivationFee() / 2;
+        warChest += moneyBack;
     }   
             
     
@@ -224,10 +259,7 @@ public class SpaceWars implements WIN
      **/
      public boolean isBattle(int num)
      {
-         Battle temp = findBattle(num);
-         if (temp == null) {return false;}
-         else {return true;}
-
+         return findBattle(num) != null;
      }
     
     
@@ -239,10 +271,13 @@ public class SpaceWars implements WIN
      **/
     public String getBattle(int num)
     {
-        Battle bat = findBattle(num);
-        if (bat == null) {return "No such battle";}
-        else {return bat.toString();}
-        
+        Battle battle = findBattle(num);
+
+        if (battle == null) {
+            return "No such battle";
+        }
+
+        return battle.toString();
 
     }
     
@@ -253,9 +288,8 @@ public class SpaceWars implements WIN
     {
         String s = "\n************ All Battles ************\n";
 
-        for (int i = 0; i < battles.size(); i++)
-        {
-            s = s + " \n " + battles.get(i).toString();
+        for (Battle battle : battles) {
+            s += "\n" + battle.toString() + "\n";
         }
         
         return s;
@@ -278,23 +312,32 @@ public class SpaceWars implements WIN
       */ 
     public int doBattle(int battleNo)
     {
-
         Battle bat = findBattle(battleNo);
-        if (bat == null){return -1;}
-        Force playerForce = matchForceToBattle(bat);
 
-        bat.addForce(playerForce);
-        int result = bat.battle();
-        if (result == 2)
-        {
-            if (matchForceToBattle(bat) == null)
-            {
-                result = 3;
-            }
-
+        if (bat == null) {
+            return -1;
         }
 
-        return result;
+        Force playerForce = matchForceToBattle(bat);
+
+        if (playerForce == null || playerForce.getBattleStrength() < bat.getEnemyStrength()) {
+            warChest -= bat.getLosses();
+
+            if (playerForce == null) {
+                return 1;
+            }
+
+            playerForce.destroy();
+
+            if (isDefeated()) {
+                return 3;
+            }
+
+            return 2;
+        }
+
+        warChest += bat.getGains();
+        return 0;
     }
     
 
@@ -303,27 +346,31 @@ public class SpaceWars implements WIN
     //*******************************************************************************
     private void setupForces()
     {
-        Force f1 = new Wing("IW1","Twister",10);
-        Force f2 = new Starship("SS2","Enterprise",10,20);
-        Force f3 = new WarBird("WB3","Droop",false,100);
-        Force f4 = new Wing("IW4","Winger",20);
-        Force f5 = new WarBird("WB5","Hang",true,300);
-
-        forces = new Force[]{f1, f2, f3, f4, f5};
-
-        for (Force f : forces)
-        {
-            UFF.add(f);
-        }
-
-
+        forces = new Force[] {
+                new Wing("IW1","Twister",10),
+                new Starship("SS2","Enterprise",10,20),
+                new WarBird("WB3","Droop",false,100),
+                new Wing("IW4","Winger",20),
+                new WarBird("WB5","Hang",true,300),
+                new Starship("SS6", "Voyager", 15, 10),
+                new Starship("SS7", "Explorer", 4, 5),
+                new WarBird("WB9", "Hover", false, 400),
+                new Wing("IW10", "Flyer", 5)
+        };
     }
     
     private void setupBattles()
     {
-
-
-
+        battles = new Battle[] {
+                new Battle(1, BattleType.FIGHT, "Borg", 200, 300, 100),
+                new Battle(2, BattleType.SKIRMISH, "Kardassians", 700, 200, 120),
+                new Battle(3, BattleType.AMBUSH, "Ferengi", 100, 400, 150),
+                new Battle(4, BattleType.FIGHT, "Ewoks", 600, 600, 200),
+                new Battle(5, BattleType.AMBUSH, "Borg", 500, 400, 90),
+                new Battle(6, BattleType.SKIRMISH, "Groaners", 150, 100, 100),
+                new Battle(7, BattleType.FIGHT, "Borg", 150, 500, 300),
+                new Battle(8, BattleType.AMBUSH, "Wailers", 300, 300, 300)
+        };
     }
 
 
@@ -340,6 +387,7 @@ public class SpaceWars implements WIN
         }
         return null;
     }
+
     private Battle findBattle(int num)
     {
         for(Battle temp : battles)
@@ -351,40 +399,88 @@ public class SpaceWars implements WIN
         }
         return null;
     }
-    private void setupPlayer(String name)
-    {
-        player = new Player(name);
+
+    private Force[] getForceObjectsByState(ForceState state) {
+        ArrayList<Force> forceObjects = new ArrayList<Force>();
+
+        for (Force force : forces) {
+            if (force.getState() == state) {
+                forceObjects.add(force);
+            }
+        }
+
+        return forceObjects.toArray(new Force[forceObjects.size()]);
+    }
+
+    private Force[] getASFObjects() {
+        return getForceObjectsByState(ForceState.ACTIVE);
+    }
+
+    private Force[] getDestroyedForceObjects() {
+        return getForceObjectsByState(ForceState.DESTROYED);
+    }
+
+    private Force[] getDockedForceObjects() {
+        return getForceObjectsByState(ForceState.DOCKED);
     }
 
     private Force matchForceToBattle(Battle bat)
     {
-
-        if (bat.getType() == BattleType.AMBUSH) {return player.getAmbush();}
-        if (bat.getType() == BattleType.SKIRMISH) {return player.getSkirmish();}
-        if (bat.getType() == BattleType.FIGHT) {return player.getFight();}
+        if (bat.getType() == BattleType.AMBUSH) { return findActiveAmbusher(); }
+        if (bat.getType() == BattleType.SKIRMISH) { return findActiveSkirmisher(); }
+        if (bat.getType() == BattleType.FIGHT) { return findActiveFighter();}
 
         return null;
     }
 
-    private void addToUFF(Force f)
-    {
-        UFF.add(f);
-        player.removeFromASF(f);
-    }
+    /**
+     * Finds first force in the ASF that can ambush.
+     * @return first force in the ASF that can ambush - otherwise null if no such force exists.
+     */
+    private Force findActiveAmbusher() {
+        Force[] activeForces = getASFObjects();
 
-    private Force findForceUFF(String ref)
-    {
-        for (Force temp : UFF)
-        {
-            if (temp.getFleetReference().equals(ref))
-            {return temp;}
+        for (Force force : activeForces) {
+            if (force.getCanAmbush()) {
+                return force;
+            }
         }
+
         return null;
     }
-    private void removeFromUFF(Force f)
-    {
-        UFF.remove(f);
+
+    /**
+     * Finds first force in the ASF that can skirmish.
+     * @return first force in the ASF that can skirmish - otherwise null if no such force exists.
+     */
+    private Force findActiveSkirmisher() {
+        Force[] activeForces = getASFObjects();
+
+        for (Force force : activeForces) {
+            if (force.getCanSkirmish()) {
+                return force;
+            }
+        }
+
+        return null;
     }
+
+    /**
+     * Finds first force in the ASF that can fight.
+     * @return first force in the ASF that can fight - otherwise null if no such force exists.
+     */
+    private Force findActiveFighter() {
+        Force[] activeForces = getASFObjects();
+
+        for (Force force : activeForces) {
+            if (force.getCanFight()) {
+                return force;
+            }
+        }
+
+        return null;
+    }
+
 
     
     //*******************************************************************************
@@ -402,9 +498,8 @@ public class SpaceWars implements WIN
                      = new FileOutputStream(fname);
              ObjectOutputStream objectOutputStream
                      = new ObjectOutputStream(fileOutputStream);
-             SpaceWars s = new SpaceWars(player.getName());
-            objectOutputStream.writeObject(s);
-
+             SpaceWars s = this;
+             objectOutputStream.writeObject(s);
 
 
              objectOutputStream.flush();
@@ -428,10 +523,10 @@ public class SpaceWars implements WIN
                      = new FileInputStream(fname);
              ObjectInputStream objectInputStream
                      = new ObjectInputStream(fileInputStream);
-            SpaceWars s = (SpaceWars) objectInputStream.readObject();
+             SpaceWars s = (SpaceWars) objectInputStream.readObject();
 
              objectInputStream.close();
-            return s;
+             return s;
 
          }
 
@@ -445,28 +540,49 @@ public class SpaceWars implements WIN
 
 
      /** Reads information about battles from the specified file into the appropriate collection
-      * @param the name of the file
+      * @param fname the name of the file
       */
      private void readBattles(String fname)
      {
+         ArrayList<Battle> battleList = new ArrayList<>();
+         BufferedReader reader;
+
          try {
-             FileInputStream fileInputStream
-                     = new FileInputStream(fname);
-             ObjectInputStream objectInputStream
-                     = new ObjectInputStream(fileInputStream);
-             Battle p2 = (Battle) objectInputStream.readObject();
-             while(p2 != null) {
-                 battles.add(p2);
-                 p2 = (Battle) objectInputStream.readObject();
+             reader = new BufferedReader(new FileReader(fname));
+
+             String line = reader.readLine();
+             int battleCounter = 1;
+
+             while (line != null) {
+                String[] data = line.split(",");
+
+                BattleType battleType = switch (data[0]) {
+                    case "Skirmish":
+                        yield BattleType.SKIRMISH;
+                    case "Ambush":
+                        yield BattleType.AMBUSH;
+                    case "Fight":
+                        yield BattleType.FIGHT;
+                    default:
+                        throw new Exception("Invalid battle type in file.");
+                };
+                String enemyName = data[1];
+                int enemyStrength = Integer.parseInt(data[2]);
+                int losses = Integer.parseInt(data[3]);
+                int gains = Integer.parseInt(data[4]);
+
+                Battle battleFromLine = new Battle(battleCounter, battleType, enemyName, enemyStrength, losses, gains);
+                battleList.add(battleFromLine);
+
+                battleCounter++;
+                line = reader.readLine();
              }
 
-             objectInputStream.close();
-
-             }
+             battles = battleList.toArray(new Battle[battleList.size()]);
+         }
 
          catch (Exception e) {
              e.printStackTrace();
-
          }
      }
 
