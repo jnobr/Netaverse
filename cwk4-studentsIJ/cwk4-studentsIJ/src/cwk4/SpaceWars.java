@@ -40,7 +40,7 @@ public class SpaceWars implements WIN
 
 
      
-    
+
     
     /**Returns a String representation of the state of the game,
      * including the name of the admiral, state of the war chest,
@@ -53,8 +53,11 @@ public class SpaceWars implements WIN
      **/
     public String toString()
     {
-        
-        return "";
+        String s = "Admiral: " + player.getName() + "\n" +
+                "War Chest: " + player.getWarChest() + "\n" +
+                "Defeated: " + isDefeated() + "\n" +
+                "Active Star Fleet: " + player.getASF();
+        return s;
     }
         
       
@@ -308,8 +311,13 @@ public class SpaceWars implements WIN
         Force f3 = new WarBird("WB3","Droop",false,100);
         Force f4 = new Wing("IW4","Winger",20);
         Force f5 = new WarBird("WB5","Hang",true,300);
+        Force f6 = new Starship("SS6","Voyager",15,10);
+        Force f7 = new Starship("SS7", "Explorer",4,5);
+        Force f8 = new WarBird("WB9","Hover",false,400);
+        Force f9 = new Wing("IW10","Flyer",5);
 
-        forces = new Force[]{f1, f2, f3, f4, f5};
+
+        forces = new Force[]{f1, f2, f3, f4, f5, f6, f7, f8, f9};
 
         for (Force f : forces)
         {

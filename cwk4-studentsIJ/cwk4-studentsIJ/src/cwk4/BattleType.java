@@ -20,4 +20,7 @@ public enum BattleType implements Serializable
     {
         return type;
     }
+
+
+
 }

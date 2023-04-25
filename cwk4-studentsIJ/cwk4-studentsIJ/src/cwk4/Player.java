@@ -17,6 +17,19 @@ public class Player {
         role = PlayerRole.ADMIRAL;
     }
 
+    @Override
+    public String toString()
+    {
+        return "Player name: " + name +
+                "\nPlayer role: " + role +
+                "\nPlayer war chest: " + warChest + " bit coins" +
+                "\nPlayer score: " + score +
+                "\nPlayer ASF: " + getASF();
+    }
+
+
+
+
     public String getName()
     {
         return name;
