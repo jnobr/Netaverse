@@ -30,7 +30,7 @@ public class SpaceWars implements WIN,Serializable
     {
         setupPlayer(admiral);
         setupForces();
-        //setupBattles();
+        setupBattles();
     }
 
     /** Second constructor - task 3.5
