@@ -61,7 +61,7 @@ public class SpaceWars implements WIN,Serializable
         String s = "Admiral: " + player.getName() + "\n" +
                 "War Chest: " + player.getWarChest() + "\n" +
                 "Defeated: " + isDefeated() + "\n" +
-                "Active Star Fleet: " + player.getASF();
+                "Active Star Fleet: " + "\n" + player.getASF();
         return s;
     }
 
@@ -73,10 +73,8 @@ public class SpaceWars implements WIN,Serializable
      */
     public boolean isDefeated()
     {
-        if ((player.getWarChest() <= 0) && player.returnSizeASF() == 0){return true;}
-
-
-
+        if (player.returnLost() == true) {return true;}
+        if ((player.getWarChest() <= 0) && player.returnSizeASF() == 0) {return true;}
 
         return false;
     }
@@ -97,14 +95,12 @@ public class SpaceWars implements WIN,Serializable
      */
     public String getAllForces()
     {
-        String s = "";
-        if (player.returnSizeASF() == 0) {
-            s = s + "\n" + "No forces in ASF";
-        }
-        else {
-            s = s + player.getASF();      }
+        String s = "******Forces in dock ******";
+        s = s + getForcesInDock();
+        s = s + "\n*****Forces in ASF****" + getASFleet();
 
-        return "";
+
+        return s;
     }
 
 
@@ -132,7 +128,7 @@ public class SpaceWars implements WIN,Serializable
 
         for (int i = 0; i < UFF.size(); i++)
         {
-            s = s + UFF.get(i).toString();
+            s = s + "\n" + UFF.get(i).toString();
         }
 
 
@@ -145,6 +141,10 @@ public class SpaceWars implements WIN,Serializable
     public String getDestroyedForces()
     {
         String s ="\n***** Destroyed Forces ****\n";
+
+        for (int i = 0; i < destroyed.size(); i++) {
+            s = s + "\n" + destroyed.get(i).toString();
+        }
 
 
         return s;
@@ -222,10 +222,12 @@ public class SpaceWars implements WIN,Serializable
     public void recallForce(String ref)
     {
         Force force = findForce(ref);
+        if (force != null && force.getState() == ForceState.ACTIVE) {
         force.recall();
         int moneyBack = force.getActivationFee()/2;
         player.addToWarchest(moneyBack);
-        addToUFF(force);
+        addToUFF(force);}
+
 
     }
 
@@ -268,7 +270,7 @@ public class SpaceWars implements WIN,Serializable
 
         for (int i = 0; i < battles.size(); i++)
         {
-            s = s + " \n " + battles.get(i).toString();
+            s = s + "\n" + battles.get(i).toString();
         }
 
         return s;
@@ -292,22 +294,38 @@ public class SpaceWars implements WIN,Serializable
     public int doBattle(int battleNo)
     {
 
+
         Battle bat = findBattle(battleNo);
         if (bat == null){return -1;}
         Force playerForce = matchForceToBattle(bat);
 
         bat.addForce(playerForce);
         int result = bat.battle();
+        if (result == 0)
+        {
+            int g = bat.getGains();
+            player.addToWarchest(g);
+        }
+        if (result == 1) {
+            int l = bat.getLosses();
+            player.removeFromWarchest(l);
+        }
         if (result == 2)
         {
             playerForce.destroy();
             destroyed.add(playerForce);
+
             if (matchForceToBattle(bat) == null)
             {
-                result = 3;
+                player.gameover();
+                return 3;
             }
 
+            int l = bat.getLosses();
+            player.removeFromWarchest(l);
+            player.removeFromASF(playerForce);
         }
+
 
         return result;
     }
@@ -318,15 +336,15 @@ public class SpaceWars implements WIN,Serializable
     //*******************************************************************************
     private void setupForces()
     {
-        Force f1 = new Wing("IW1","Twister",10);
+        Force f1 = new Wing("IW1","Twisters",10);
         Force f2 = new Starship("SS2","Enterprise",10,20);
         Force f3 = new WarBird("WB3","Droop",false,100);
-        Force f4 = new Wing("IW4","Winger",20);
+        Force f4 = new Wing("IW4","Wingers",20);
         Force f5 = new WarBird("WB5","Hang",true,300);
         Force f6 = new Starship("SS6","Voyager",15,10);
         Force f7 = new Starship("SS7", "Explorer",4,5);
         Force f8 = new WarBird("WB9","Hover",false,400);
-        Force f9 = new Wing("IW10","Flyer",5);
+        Force f9 = new Wing("IW10","Flyers",5);
 
 
         forces = new Force[]{f1, f2, f3, f4, f5, f6, f7, f8, f9};

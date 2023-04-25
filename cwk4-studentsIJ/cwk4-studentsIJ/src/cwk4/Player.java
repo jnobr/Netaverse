@@ -5,25 +5,24 @@ import java.util.*;
 public class Player {
     private String name;
     private int warChest;
-    private int score;
-    private PlayerRole role;
+    private Boolean lost;
+
+
 
     private ArrayList<Force> ASF = new ArrayList<Force>();
     public Player(String n)
     {
         name = n;
         warChest = 1000;
-        score = 0;
-        role = PlayerRole.ADMIRAL;
+        lost = false;
+
     }
 
     @Override
     public String toString()
     {
         return "Player name: " + name +
-                "\nPlayer role: " + role +
                 "\nPlayer war chest: " + warChest + " bit coins" +
-                "\nPlayer score: " + score +
                 "\nPlayer ASF: " + getASF();
     }
 
@@ -40,20 +39,14 @@ public class Player {
         return warChest;
     }
 
-    public int score()
-    {
-        return score;
-    }
 
-    public PlayerRole getRole()
-    {
-        return role;
+    public void gameover(){
+        lost = true;
     }
+    public Boolean returnLost() {return lost;}
 
-    public void addToScore(int toAdd)
-    {
 
-    }
+
 
     public void addToWarchest(int m) {
         warChest += m;
