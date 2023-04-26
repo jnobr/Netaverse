@@ -453,21 +453,7 @@ public class SpaceWars implements WIN,Serializable
                     = new FileOutputStream(fname);
             ObjectOutputStream objectOutputStream
                     = new ObjectOutputStream(fileOutputStream);
-            SpaceWars s = new SpaceWars(player.getName(),"battles.txt");
-
-            for(int i = 0; i < forces.length; i++) {
-                String ref = forces[i].getFleetReference();
-                if (isInASFleet(ref)) {
-                    s.activateForce(ref);
-                }
-                if (forces[i].getState() == ForceState.DESTROYED) {
-                    Force f = s.findForce(ref);
-                    f.destroy();
-                }
-
-
-            }
-            s.player.setWarChest(player.getWarChest());
+            SpaceWars s = this;
             objectOutputStream.writeObject(s);
 
 

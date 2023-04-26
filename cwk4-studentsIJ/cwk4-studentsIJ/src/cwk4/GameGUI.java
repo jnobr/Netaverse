@@ -7,8 +7,8 @@ import java.util.*;
 /**
  * Provide a GUI interface for the game
  *
- * @author A.A.Marczyk
- * @version 20/10/23
+ * @author Zohaib Rehman, Andrei Cirlig
+ * @version 26/04/23
  */
 public class GameGUI {
     private WIN gp = new SpaceWars("Horatio");
