@@ -43,23 +43,19 @@ public class GameGUI {
         JMenuBar menubar = new JMenuBar();
         frame.setJMenuBar(menubar);
 
-        // create the Forces menu
-        JMenu forcesMenu = new JMenu("Forces");
-        menubar.add(forcesMenu);
 
-        JMenuItem listForcesItem = new JMenuItem("List All Forces ");
-        JMenuItem close = new JMenuItem("Close");
-        listForcesItem.addActionListener(new ListForcesHandler());
-        forcesMenu.add(listForcesItem);
+        // create the Save Game button
+        JButton saveGameButton = new JButton("Save Game");
+        menubar.add(saveGameButton);
 
-        // Add the Close menu item and its ActionListener
-        close.addActionListener(new ActionListener() {
+        // Add an ActionListener to the Save Game button
+        saveGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                listing.setVisible(false);;
+                gp.saveGame("olenka.txt");
+                JOptionPane.showMessageDialog(myFrame, "Game saved to olenka.txt");
             }
         });
-        forcesMenu.add(close);
     }
 
     /**
@@ -115,6 +111,22 @@ public class GameGUI {
         }
         return " no such fight ";
     }
+    private void checkGameOverAndReturnToMainMenu() {
+        String fleetStrengthText = fleetStrengthLabel.getText();
+        int fleetStrength = Integer.parseInt(fleetStrengthText.split(": ")[1]);
+
+        String creditsText = creditsLabel.getText();
+        int credits = Integer.parseInt(creditsText.split(": ")[1]);
+
+        if (fleetStrength == 0 && credits <= 0) {
+            JOptionPane.showMessageDialog(myFrame, "Game Over");
+            myFrame.dispose(); // Close the window
+            System.exit(0); // Stop the program
+        }
+    }
+
+
+
     private void updateFleetStrengthLabel() {
         String fleetInfo = gp.getASFleet();
         String[] lines = fleetInfo.split("\n");
@@ -129,16 +141,10 @@ public class GameGUI {
 
         fleetStrengthLabel.setText("Your Fleet Strength: " + totalBattleStrength);
         fleetStrengthLabel.setVisible(true);
+
     }
 
-    private class ListForcesHandler implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            listing.setVisible(true);
-            String xx = gp.getASFleet();
-            listing.setText(xx);
 
-        }
-    }
 
     private class FightBtnHandler implements ActionListener {
         public void actionPerformed(ActionEvent e) {
@@ -174,6 +180,8 @@ public class GameGUI {
     private void showButtons() {
         newGameBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                activateFleetBtn.setVisible(true);
+                retreatFleetBtn.setVisible(true);
                 String admiralName = JOptionPane.showInputDialog("Enter admiral name: ");
                 gp = new SpaceWars(admiralName);
 
@@ -214,6 +222,7 @@ public class GameGUI {
                                 JOptionPane.showMessageDialog(myFrame, fighting(result));
                                 creditsLabel.setText(String.format("Credits: %s", gp.getWarchest()));
                                 updateFleetStrengthLabel();
+                                checkGameOverAndReturnToMainMenu();
 
                             }
                         });
@@ -278,7 +287,7 @@ public class GameGUI {
                                         System.out.println(activation(res));
                                         creditsLabel.setText(String.format("Credits: %s", gp.getWarchest()));
                                         updateFleetStrengthLabel();
-
+                                        checkGameOverAndReturnToMainMenu();
 
                                     }
                                 });
@@ -335,7 +344,7 @@ public class GameGUI {
 
                                         creditsLabel.setText(String.format("Credits: %s", gp.getWarchest()));
                                         updateFleetStrengthLabel();
-
+                                        checkGameOverAndReturnToMainMenu();
                                     }
                                 });
 
@@ -367,7 +376,10 @@ public class GameGUI {
 
         loadGameBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // code to load a saved game
+
+                JOptionPane.showMessageDialog(myFrame, "Restore from file battles.txt");
+                gp = gp.restoreGame("battles.txt");
+
             }
         });
 
