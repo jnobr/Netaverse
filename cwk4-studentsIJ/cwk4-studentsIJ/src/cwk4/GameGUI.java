@@ -7,7 +7,7 @@ import java.util.*;
 /**
  * Provide a GUI interface for the game
  *
- * @author Zohaib Rehman, Andrei Cirlig
+ * @author Team 4
  * @version 26/04/23
  */
 public class GameGUI {

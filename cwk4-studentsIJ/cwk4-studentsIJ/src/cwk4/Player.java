@@ -2,6 +2,10 @@ package cwk4;
 
 import java.io.Serializable;
 import java.util.*;
+/**
+ * Stores details relating to a single player.
+ * @author Andrei Cirlig, Janine Obiri, Lewis Turnbull, Zohaib Rehman
+ */
 
 public class Player implements Serializable {
     private final String name;

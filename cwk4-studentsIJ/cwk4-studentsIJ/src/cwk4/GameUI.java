@@ -5,8 +5,8 @@ import java.util.*;
 /**
  * Provide a command line user interface
  * 
- * @author A.A.Marczyk
- * @version 06/10/23
+ * @author Team 4
+ * @version 26/04/23
  */
 public class GameUI
 {
