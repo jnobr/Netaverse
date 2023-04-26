@@ -16,7 +16,7 @@ public class SpaceWars implements WIN, Serializable
     private String admiralName;
     private int warChest = 1000;
 
-    private Force[] forces;
+    private HashMap<String, Force> forces;
     private Battle[] battles;
 
 //**************** WIN **************************  
@@ -103,7 +103,7 @@ public class SpaceWars implements WIN, Serializable
      **/
     public boolean isInUFFDock(String ref) 
     {
-        return findForce(ref) != null;
+        return forces.get(ref) != null;
     }
     
     /**Returns a String representation of all forces in the United Forces Fleet(UFF) dock.
@@ -153,7 +153,7 @@ public class SpaceWars implements WIN, Serializable
      **/
     public String getForceDetails(String ref)
     {
-        Force force = findForce(ref);
+        Force force = forces.get(ref);
 
         if (force != null) {
             return force.toString();
@@ -173,7 +173,7 @@ public class SpaceWars implements WIN, Serializable
      **/       
     public int activateForce(String ref)
     {
-        Force force = findForce(ref);
+        Force force = forces.get(ref);
 
         if (force == null) {
             return -1;
@@ -202,7 +202,7 @@ public class SpaceWars implements WIN, Serializable
      **/
     public boolean isInASFleet(String ref)
     {
-        Force force = findForce(ref);
+        Force force = forces.get(ref);
 
         if (force == null) {
             return false;
@@ -239,7 +239,7 @@ public class SpaceWars implements WIN, Serializable
      **/
     public void recallForce(String ref)
     {
-        Force force = findForce(ref);
+        Force force = forces.get(ref);
 
         if (force == null || force.getState() != ForceState.ACTIVE) {
             return;
@@ -346,17 +346,17 @@ public class SpaceWars implements WIN, Serializable
     //*******************************************************************************
     private void setupForces()
     {
-        forces = new Force[] {
-                new Wing("IW1","Twister",10),
-                new Starship("SS2","Enterprise",10,20),
-                new WarBird("WB3","Droop",false,100),
-                new Wing("IW4","Winger",20),
-                new WarBird("WB5","Hang",true,300),
-                new Starship("SS6", "Voyager", 15, 10),
-                new Starship("SS7", "Explorer", 4, 5),
-                new WarBird("WB9", "Hover", false, 400),
-                new Wing("IW10", "Flyer", 5)
-        };
+        forces = new HashMap<String, Force>();
+
+        forces.put("IW1", new Wing("IW1","Twister",10));
+        forces.put("SS2", new Starship("SS2","Enterprise",10,20));
+        forces.put("WB3", new WarBird("WB3","Droop",false,100));
+        forces.put("IW4", new Wing("IW4","Winger",20));
+        forces.put("WB5", new WarBird("WB5","Hang",true,300));
+        forces.put("SS6", new Starship("SS6", "Voyager", 15, 10));
+        forces.put("SS7", new Starship("SS7", "Explorer", 4, 5));
+        forces.put("WB9", new WarBird("WB9", "Hover", false, 400));
+        forces.put("IW10", new Wing("IW10", "Flyer", 5));
     }
     
     private void setupBattles()
@@ -376,18 +376,6 @@ public class SpaceWars implements WIN, Serializable
 
     
     //**************************Add your own private methos here ***********************
-    private Force findForce(String ref) {
-
-        for(Force temp : forces)
-        {
-            if (temp.getFleetReference().equals(ref))
-            {
-                return temp;
-            }
-        }
-        return null;
-    }
-
     private Battle findBattle(int num)
     {
         for(Battle temp : battles)
@@ -403,7 +391,7 @@ public class SpaceWars implements WIN, Serializable
     private Force[] getForceObjectsByState(ForceState state) {
         ArrayList<Force> forceObjects = new ArrayList<Force>();
 
-        for (Force force : forces) {
+        for (Force force : forces.values()) {
             if (force.getState() == state) {
                 forceObjects.add(force);
             }
