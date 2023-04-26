@@ -60,7 +60,7 @@ public class Player {
     {
         String s = "";
         for (Force temp: ASF) {
-            s = s + temp.toString();
+            s = s +"\n"+ temp.toString();
         }
         return s;
 
