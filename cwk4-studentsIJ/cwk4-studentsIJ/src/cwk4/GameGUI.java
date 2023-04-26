@@ -18,6 +18,8 @@ public class GameGUI {
 
     private JButton activateFleetBtn = new JButton("Activate Fleet");
     private JButton retreatFleetBtn = new JButton("Retreat Fleet");
+    private JLabel fleetStrengthLabel = new JLabel("Your Fleet Strength: 0");
+
 
     private JTextArea listing = new JTextArea();
     private JLabel codeLabel = new JLabel();
@@ -71,18 +73,32 @@ public class GameGUI {
         centerPanel.add(loadGameBtn);
         centerPanel.add(exitBtn);
         creditsLabel.setVisible(false);
-        myFrame.add(creditsLabel, BorderLayout.WEST);
+
+        // Create a JPanel for the westPanel
+        JPanel westPanel = new JPanel();
+        westPanel.setLayout(new BoxLayout(westPanel, BoxLayout.Y_AXIS));
+
+        // Add creditsLabel and fleetStrengthLabel to the westPanel
+        westPanel.add(creditsLabel);
+        westPanel.add(fleetStrengthLabel);
+
+        // Add the westPanel to the BorderLayout
+        myFrame.add(westPanel, BorderLayout.WEST);
+
+        // Make the fleetStrengthLabel invisible initially
+        fleetStrengthLabel.setVisible(false);
+
         myFrame.add(listing, BorderLayout.NORTH);
         listing.setVisible(false);
         myFrame.add(eastPanel, BorderLayout.EAST);
-        // set panel layout and add components
         eastPanel.setLayout(new GridLayout(4, 1));
         eastPanel.add(fightBtn);
         fightBtn.addActionListener(new FightBtnHandler());
         eastPanel.setVisible(false);
 
-        // building is done - arrange the components and show
+        myFrame.setPreferredSize(new Dimension(800, 600)); // Change the numbers to the desired width and height
         myFrame.pack();
+        myFrame.setLocationRelativeTo(null); // Center the window on the screen
         myFrame.setVisible(true);
     }
 
@@ -99,11 +115,26 @@ public class GameGUI {
         }
         return " no such fight ";
     }
+    private void updateFleetStrengthLabel() {
+        String fleetInfo = gp.getASFleet();
+        String[] lines = fleetInfo.split("\n");
+        int totalBattleStrength = 0;
+
+        for (String line : lines) {
+            if (line.contains("Battle strength")) {
+                int battleStrength = Integer.parseInt(line.split(":")[1].trim());
+                totalBattleStrength += battleStrength;
+            }
+        }
+
+        fleetStrengthLabel.setText("Your Fleet Strength: " + totalBattleStrength);
+        fleetStrengthLabel.setVisible(true);
+    }
 
     private class ListForcesHandler implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             listing.setVisible(true);
-            String xx = gp.getAllForces();
+            String xx = gp.getASFleet();
             listing.setText(xx);
 
         }
@@ -133,9 +164,9 @@ public class GameGUI {
     {
         switch (code)
         {
-            case 0:return "force is activated";
-            case 1:return "force is not in the UFFDock";
-            case 2:return "not enough money";
+            case 0: JOptionPane.showMessageDialog(myFrame, "force is activated"); return "force is activated" ;
+            case 1: JOptionPane.showMessageDialog(myFrame, "force is not in the UFFDock"); return "force is not in the UFFDock";
+            case 2: JOptionPane.showMessageDialog(myFrame, "not enough money"); return "not enough money";
             case 3:return "no such force";
             default: return "Error";
         }
@@ -153,7 +184,7 @@ public class GameGUI {
                 creditsLabel.setText(String.format("Credits: %s", gp.getWarchest()));
 
                 creditsLabel.setVisible(true);  // make the credits label visible
-
+                fleetStrengthLabel.setVisible(true);
                 // Create buttons for each battle number
                 JPanel buttonPanel = new JPanel();
                 buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
@@ -181,6 +212,9 @@ public class GameGUI {
                                 int result = -1;
                                 result = gp.doBattle(battleNum);
                                 JOptionPane.showMessageDialog(myFrame, fighting(result));
+                                creditsLabel.setText(String.format("Credits: %s", gp.getWarchest()));
+                                updateFleetStrengthLabel();
+
                             }
                         });
                         buttonPanel.add(btn);
@@ -219,6 +253,70 @@ public class GameGUI {
                             String line = lines[i].trim();
                             if (line.startsWith("Fleet reference")) {
                                 StringBuilder shipInfo = new StringBuilder("<html>");
+                                boolean forceIsActive = false;
+                                for (int j = i; j < i + 9 && j < lines.length; j++) {
+                                    shipInfo.append(lines[j].trim());
+                                    if (j < i + 8) {
+                                        shipInfo.append("<br>");
+                                    }
+                                    if (lines[j].contains("Force state: Active")) {
+                                        forceIsActive = true;
+                                    }
+                                }
+                                shipInfo.append("</html>");
+
+                                JButton shipButton = new JButton(shipInfo.toString());
+                                shipButton.setPreferredSize(new Dimension(shipButton.getPreferredSize().width, 150));
+
+                                shipButton.addActionListener(new ActionListener() {
+                                    public void actionPerformed(ActionEvent e) {
+                                        // Implement the activation logic for the ship here
+                                        int res = gp.activateForce(line.split(":")[1].trim());
+                                        if (res==0){
+                                            shipButton.setVisible(false);
+                                        }
+                                        System.out.println(activation(res));
+                                        creditsLabel.setText(String.format("Credits: %s", gp.getWarchest()));
+                                        updateFleetStrengthLabel();
+
+
+                                    }
+                                });
+                                if (forceIsActive) {
+                                    shipButton.setVisible(false);
+                                }
+                                shipsPanel.add(shipButton);
+                                i += 8; // Increment the loop counter to account for the additional lines of ship information.
+                            }
+
+                        }
+
+                        activateFleetFrame.add(scrollPane, BorderLayout.CENTER);
+                        activateFleetFrame.pack();
+                        activateFleetFrame.setVisible(true);
+                    }
+                });
+                retreatFleetBtn.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        String allForces = gp.getASFleet();
+                        String[] lines = allForces.split("\n");
+
+                        // Create a new JFrame to display the available ships
+                        JFrame activateFleetFrame = new JFrame("Active Fleet");
+                        activateFleetFrame.setLayout(new BorderLayout());
+
+                        JPanel shipsPanel = new JPanel();
+                        shipsPanel.setLayout(new BoxLayout(shipsPanel, BoxLayout.Y_AXIS));
+
+                        JScrollPane scrollPane = new JScrollPane(shipsPanel);
+                        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+                        scrollPane.setPreferredSize(new Dimension(600, 300));
+
+                        for (int i = 0; i < lines.length; i++) {
+                            String line = lines[i].trim();
+                            if (line.startsWith("Fleet reference")) {
+                                StringBuilder shipInfo = new StringBuilder("<html>");
                                 for (int j = i; j < i + 9 && j < lines.length; j++) {
                                     shipInfo.append(lines[j].trim());
                                     if (j < i + 8) {
@@ -231,9 +329,13 @@ public class GameGUI {
                                 shipButton.addActionListener(new ActionListener() {
                                     public void actionPerformed(ActionEvent e) {
                                         // Implement the activation logic for the ship here
-                                        int res = gp.activateForce(line.split(":")[1].trim());
-                                        System.out.println(activation(res));
+                                        System.out.println(gp.getASFleet());
+                                        gp.recallForce(line.split(":")[1].trim());
+                                        shipButton.setVisible(false);
+
                                         creditsLabel.setText(String.format("Credits: %s", gp.getWarchest()));
+                                        updateFleetStrengthLabel();
+
                                     }
                                 });
 
@@ -280,3 +382,4 @@ public class GameGUI {
         new GameGUI();
     }
 }
+

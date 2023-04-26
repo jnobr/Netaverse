@@ -61,7 +61,7 @@ public class Player implements Serializable {
     {
         String s = "";
         for (Force temp: ASF) {
-            s = s + temp.toString();
+            s = s +"\n"+ temp.toString();
         }
         return s;
 
