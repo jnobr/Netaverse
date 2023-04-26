@@ -436,6 +436,8 @@ public class SpaceWars implements WIN,Serializable
     }
 
 
+
+
     //*******************************************************************************
 
     //These methods are not needed until Task 3.5. Uncomment thmemto complete task 3.5
@@ -452,6 +454,20 @@ public class SpaceWars implements WIN,Serializable
             ObjectOutputStream objectOutputStream
                     = new ObjectOutputStream(fileOutputStream);
             SpaceWars s = new SpaceWars(player.getName(),"battles.txt");
+
+            for(int i = 0; i < forces.length; i++) {
+                String ref = forces[i].getFleetReference();
+                if (isInASFleet(ref)) {
+                    s.activateForce(ref);
+                }
+                if (forces[i].getState() == ForceState.DESTROYED) {
+                    Force f = s.findForce(ref);
+                    f.destroy();
+                }
+
+
+            }
+            s.player.setWarChest(player.getWarChest());
             objectOutputStream.writeObject(s);
 
 

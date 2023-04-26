@@ -52,7 +52,7 @@ public class GameGUI {
         saveGameButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gp.saveGame("olenka.txt");
+                gp.saveGame("Olenka.txt");
                 JOptionPane.showMessageDialog(myFrame, "Game saved to olenka.txt");
             }
         });

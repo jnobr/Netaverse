@@ -40,6 +40,8 @@ public class Player implements Serializable {
         return warChest;
     }
 
+    public void setWarChest(int m) {warChest = m;}
+
 
     public void gameover(){
         lost = true;
@@ -134,3 +136,5 @@ public class Player implements Serializable {
         return ASF.size();
     }
 }
+
+
