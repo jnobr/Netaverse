@@ -378,14 +378,13 @@ public class SpaceWars implements WIN, Serializable
     //**************************Add your own private methos here ***********************
     private Battle findBattle(int num)
     {
-        for(Battle temp : battles)
-        {
-            if (temp.getBattleNo() == num)
-            {
-                return temp;
-            }
+        int index = num - 1;
+
+        if (index < 0 || index >= battles.length) {
+            return null;
         }
-        return null;
+
+        return battles[index];
     }
 
     private Force[] getForceObjectsByState(ForceState state) {
