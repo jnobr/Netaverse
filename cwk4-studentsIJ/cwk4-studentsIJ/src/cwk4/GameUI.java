@@ -56,7 +56,8 @@ public class GameUI
             {
                 System.out.println("Enter battle number: ");
                 int num = myIn.nextInt();
-                System.out.println(gp.doBattle(num));
+                int res = gp.doBattle(num);
+                System.out.println(battleResult(res));
 
                 
             }
@@ -80,12 +81,12 @@ public class GameUI
              {
                  System.out.println("Write to file");
 
-                 ((SpaceWars) gp).saveGame("battles.txt");
+                 gp.saveGame("Olenka.txt");
              }
              else if (choice == 10) // Task 3.5 only
              {
                  System.out.println("Restore from file");
-                 gp = gp.restoreGame("olenka.txt");
+                 gp = gp.restoreGame("Olenka.txt");
                  System.out.println(gp.toString());
              }
         }  
@@ -126,6 +127,18 @@ public class GameUI
             case 1:return "force is not in the UFFDock"; 
             case 2:return "not enough money";
             case 3:return "no such force";
+            default: return "Error";
+        }
+    }
+
+    private String battleResult(int code)
+    {
+        switch (code)
+        {
+            case 0:return "Battle won, gains added to warchest";
+            case 1:return "Battle lost as no suitable forces available, losses deducted from warchest";
+            case 2:return "Battle lost, force too weak, losses deducted";
+            case 3:return "Complete defeat";
             default: return "Error";
         }
     }

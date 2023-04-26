@@ -1,9 +1,11 @@
 package cwk4;
 
+import java.io.Serializable;
+
 /**
  * @author Andrei Cirlig, Janine Obiri, Lewis Turnbull, Zohaib Rehman
  */
-public class WarBird extends Force {
+public class WarBird extends Force implements Serializable {
     final private boolean canCloak;
 
     public WarBird(String fleetReference, String name, boolean canCloak, int battleStrength) {

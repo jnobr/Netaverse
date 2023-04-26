@@ -1,9 +1,10 @@
 package cwk4;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Player {
-    private String name;
+public class Player implements Serializable {
+    private final String name;
     private int warChest;
     private Boolean lost;
 

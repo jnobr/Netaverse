@@ -58,11 +58,11 @@ public class SpaceWars implements WIN,Serializable
      **/
     public String toString()
     {
-        String s = "Admiral: " + player.getName() + "\n" +
+        return "Admiral: " + player.getName() + "\n" +
                 "War Chest: " + player.getWarChest() + "\n" +
                 "Defeated: " + isDefeated() + "\n" +
                 "Active Star Fleet: " + "\n" + player.getASF();
-        return s;
+
     }
 
 
@@ -73,7 +73,7 @@ public class SpaceWars implements WIN,Serializable
      */
     public boolean isDefeated()
     {
-        if (player.returnLost() == true) {return true;}
+        if (player.returnLost()) {return true;}
         if ((player.getWarChest() <= 0) && player.returnSizeASF() == 0) {return true;}
 
         return false;
@@ -349,10 +349,7 @@ public class SpaceWars implements WIN,Serializable
 
         forces = new Force[]{f1, f2, f3, f4, f5, f6, f7, f8, f9};
 
-        for (Force f : forces)
-        {
-            UFF.add(f);
-        }
+        Collections.addAll(UFF, forces);
 
 
     }
@@ -454,7 +451,7 @@ public class SpaceWars implements WIN,Serializable
                     = new FileOutputStream(fname);
             ObjectOutputStream objectOutputStream
                     = new ObjectOutputStream(fileOutputStream);
-            SpaceWars s = new SpaceWars(player.getName(),"Olenka.txt");
+            SpaceWars s = new SpaceWars(player.getName(),"battles.txt");
             objectOutputStream.writeObject(s);
 
 
@@ -508,7 +505,7 @@ public class SpaceWars implements WIN,Serializable
             while((currentLine = inf.readLine() )!= null) {
                 String[] info = currentLine.split(",");
                 int num = Integer.parseInt(info[0]);
-                BattleType ty = BattleType.valueOf( info[1]);
+                BattleType ty = BattleType.valueOf(info[1]);
                 String na = info[2];
                 int str = Integer.parseInt(info[3]);
                 int gain = Integer.parseInt(info[4]);

@@ -15,7 +15,7 @@ public enum BattleType implements Serializable
     {
         type = ty;
     }
-    
+
     public String toString()
     {
         return type;

@@ -1,9 +1,11 @@
 package cwk4;
 
+import java.io.Serializable;
+
 /**
  * @author Andrei Cirlig, Janine Obiri, Lewis Turnbull, Zohaib Rehman
  */
-public class Wing extends Force {
+public class Wing extends Force implements Serializable {
     final private int strikers;
 
     public Wing(String fleetReference, String name, int strikers) {

@@ -1,9 +1,11 @@
 package cwk4;
 
+import java.io.Serializable;
+
 /**
  * @author Andrei Cirlig, Janine Obiri, Lewis Turnbull, Zohaib Rehman
  */
-public class Starship extends Force {
+public class Starship extends Force implements Serializable {
     final private int laserCanons;
     final private int photonTorpedoes;
 
